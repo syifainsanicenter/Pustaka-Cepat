@@ -40,21 +40,16 @@ const prompt = ai.definePrompt({
 Language: {{{language}}}
 Topic: {{{topic}}}
 
-Available References:
-{{#each (JSONparse referencesJson)}}
-  {{#if arabText}}
-    - refId: {{refId}}, type: {{type}}, arabText: {{{arabText}}}, translation: {{{meta.translation}}}, reference: {{{rujukan}}}
-  {{else}}
-    - refId: {{refId}}, type: {{type}}, translation: {{{meta.translation}}}, reference: {{{rujukan}}}
-  {{/if}}
-{{/each}}
+Available References (JSON format):
+{{{referencesJson}}}
 
 Instructions:
-1.  Select the reference that is most relevant to the topic.
-2.  Provide the arabText (if available), a short translation (in {{{language}}}), and the reference.
-3.  If no suitable reference is found, explain why in the todoRef field (in {{{language}}}).
-4. If a refId was used, include it in the output.
-5. Notes should also be in {{{language}}}.
+1.  Analyze the provided JSON of references.
+2.  Select the reference that is most relevant to the topic.
+3.  Provide the arabText (if available), a short translation (in {{{language}}}), and the reference (rujukan).
+4.  If no suitable reference is found, explain why in the todoRef field (in {{{language}}}).
+5. If a refId was used from the JSON, include it in the output.
+6. Notes should also be in {{{language}}}.
 
 Output JSON: {
   "arabText": "The Arabic text of the Quranic verse or Hadith.",
@@ -92,4 +87,3 @@ const insertIslamicReferenceFlow = ai.defineFlow(
     }
   }
 );
-
