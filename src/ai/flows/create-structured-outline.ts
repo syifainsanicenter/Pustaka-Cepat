@@ -16,7 +16,7 @@ const CreateStructuredOutlineInputSchema = z.object({
   category: z
     .string()
     .describe(
-      'The category of the book (e.g., academic, textbook, monograph, popular, islam).' // Corrected typo here
+      'The category of the book (e.g., academic, textbook, monograph, popular, islamic).'
     ),
   language: z.string().describe('The language of the book (id/en/ar/su/jv/zh).'),
   writingStyle: z.string().describe('The writing style of the book.'),
@@ -38,7 +38,7 @@ const CreateStructuredOutlineOutputSchema = z.object({
       subheadings: z.array(z.string()).describe('The subheadings of the chapter.'),
       objectives: z.array(z.string()).describe('The objectives of the chapter.'),
       glossaryTerms: z.array(z.string()).describe('Key terms for the chapter.'),
-      suggestedDalilTopics: z.array(z.string()).optional().describe('Suggested topics for Quran/Hadith verses (if category is islam).'),
+      suggestedDalilTopics: z.array(z.string()).optional().describe('Suggested topics for Quran/Hadith verses (if category is islamic).'),
     })),
   notes: z.string().optional().describe('Any additional notes or comments.'),
 });
@@ -68,7 +68,7 @@ Audiens: {{{audience}}}; Tujuan: {{{goal}}}
 Jumlah bab target: {{{chaptersCount}}}
 Instruksi tambahan: {{{extraInstructions}}}
 KELUARAN WAJIB: JSON sesuai skema. Untuk tiap bab: title, 3-6 subheadings, 2-4 objectives, glossaryTerms (istilah kunci).
-{{#eq category "islam"}}Jika category=“islam”, tambahkan suggestedDalilTopics (array tema ayat/hadis per bab).{{/eq}}
+{{#eq category "islamic"}}Jika category=“islamic”, tambahkan suggestedDalilTopics (array tema ayat/hadis per bab).{{/eq}}
 CATATAN: Outline harus progresif, tidak tumpang tindih, dan siap dipakai untuk generate bab.`,
 });
 
@@ -83,5 +83,3 @@ const createStructuredOutlineFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    
