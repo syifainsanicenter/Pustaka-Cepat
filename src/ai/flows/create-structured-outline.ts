@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview A flow to generate a structured book outline with 8-12 chapters.
+ * @fileOverview A flow to generate a structured book outline.
  *
  * - createStructuredOutline - A function that handles the book outline generation.
  * - CreateStructuredOutlineInput - The input type for the createStructuredOutline function.
@@ -23,7 +23,7 @@ const CreateStructuredOutlineInputSchema = z.object({
   tone: z.string().describe('The tone of the book.'),
   audience: z.string().describe('The target audience for the book.'),
   goal: z.string().describe('The goal of the book.'),
-  chaptersCount: z.number().describe('The target number of chapters (8-12).'),
+  chaptersCount: z.number().describe('The target number of chapters (3-20).'),
   extraInstructions: z.string().describe('Any additional instructions.'),
 });
 export type CreateStructuredOutlineInput = z.infer<
@@ -58,7 +58,7 @@ const prompt = ai.definePrompt({
   name: 'createStructuredOutlinePrompt',
   input: {schema: CreateStructuredOutlineInputSchema.extend({ isIslamic: z.boolean() })},
   output: {schema: CreateStructuredOutlineOutputSchema},
-  prompt: `TUGAS: Susun outline buku terstruktur 8-12 bab untuk proyek di bawah ini. PASTIKAN SEMUA OUTPUT DALAM BAHASA YANG TELAH DITENTUKAN.
+  prompt: `TUGAS: Susun outline buku terstruktur {{{chaptersCount}}} bab untuk proyek di bawah ini. PASTIKAN SEMUA OUTPUT DALAM BAHASA YANG TELAH DITENTUKAN.
 PROJECT:
 
 Judul: {{{chosenIdeaTitle}}}

@@ -20,7 +20,7 @@ interface StyleStepProps {
 const formSchema = z.object({
   writingStyle: z.string().min(3, 'Gaya penulisan harus diisi.'),
   tone: z.string().min(3, 'Gaya bahasa harus diisi.'),
-  chaptersCount: z.number().min(8).max(12),
+  chaptersCount: z.number().min(3).max(20),
 });
 
 export function StyleStep({ project, onComplete, onBack }: StyleStepProps) {
@@ -117,8 +117,8 @@ export function StyleStep({ project, onComplete, onBack }: StyleStepProps) {
                                 <FormLabel>Jumlah Bab: {chaptersCount}</FormLabel>
                                 <FormControl>
                                     <Slider
-                                        min={8}
-                                        max={12}
+                                        min={3}
+                                        max={20}
                                         step={1}
                                         defaultValue={[field.value]}
                                         onValueChange={(value) => field.onChange(value[0])}
