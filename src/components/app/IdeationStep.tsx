@@ -26,7 +26,7 @@ interface IdeationStepProps {
 
 const formSchema = z.object({
   projectTitle: z.string().min(5, 'Judul proyek minimal 5 karakter.'),
-  audience: z.string().min(5, 'Audiens minimal 5 karakter.'),
+  audience: z.string().min(3, 'Target audiens harus dipilih.'),
   goal: z.string().min(5, 'Tujuan minimal 5 karakter.'),
   language: z.enum(['id', 'en', 'ar', 'su', 'jv', 'zh']),
 });
@@ -41,7 +41,7 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
     resolver: zodResolver(formSchema),
     defaultValues: {
       projectTitle: project.projectTitle || '',
-      audience: project.audience || '',
+      audience: project.audience || 'Mahasiswa S1',
       goal: project.goal || '',
       language: project.language || 'id',
     },
@@ -102,9 +102,24 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Target Audiens</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Contoh: Mahasiswa Sejarah, peminat studi Islam" {...field} rows={2} />
-                    </FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Pilih target audiens" />
+                        </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            <SelectItem value="Mahasiswa S1">Mahasiswa S1</SelectItem>
+                            <SelectItem value="Mahasiswa S2">Mahasiswa S2</SelectItem>
+                            <SelectItem value="Dosen">Dosen</SelectItem>
+                            <SelectItem value="Peneliti Pendidikan">Peneliti Pendidikan</SelectItem>
+                            <SelectItem value="Ustadz">Ustadz</SelectItem>
+                            <SelectItem value="Anak-anak">Anak-anak</SelectItem>
+                            <SelectItem value="Remaja">Remaja</SelectItem>
+                            <SelectItem value="Ibu-ibu">Ibu-ibu</SelectItem>
+                            <SelectItem value="Umum">Umum</SelectItem>
+                        </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
