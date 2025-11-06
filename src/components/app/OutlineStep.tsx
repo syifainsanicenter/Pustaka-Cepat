@@ -47,7 +47,7 @@ export function OutlineStep({ project, onBack, onComplete }: OutlineStepProps) {
         tone: project.tone,
         audience: project.audience,
         goal: project.goal,
-        chaptersCount: 10,
+        chaptersCount: project.chaptersCount || 10,
         extraInstructions: 'Pastikan outline logis, progresif, dan tidak ada tumpang tindih antar bab.',
       };
       
@@ -78,7 +78,7 @@ export function OutlineStep({ project, onBack, onComplete }: OutlineStepProps) {
       <CardContent className="text-center py-12 border-t border-dashed">
         <ListTree className="mx-auto h-16 w-16 text-muted-foreground" />
         <h3 className="mt-4 text-xl font-medium text-foreground">Siap Membuat Outline?</h3>
-        <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">AI akan menghasilkan 8-12 bab lengkap dengan subjudul, tujuan pembelajaran, dan istilah kunci untuk setiap bab.</p>
+        <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">AI akan menghasilkan {project.chaptersCount || 10} bab lengkap dengan subjudul, tujuan pembelajaran, dan istilah kunci untuk setiap bab.</p>
         <Button size="lg" className="mt-6" onClick={handleGenerateOutline} disabled={isPending}>
           <Wand2 className="mr-2 h-5 w-5" />
           Generate Outline
