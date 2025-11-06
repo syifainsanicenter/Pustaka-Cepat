@@ -12,6 +12,9 @@ import { generateChapterAction } from '@/app/actions';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { cn } from '@/lib/utils';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { Slider } from '../ui/slider';
+import { Label } from '../ui/label';
 
 interface ChapterStepProps {
   project: Project;
@@ -23,19 +26,26 @@ type ChapterResult = GenerateChapterContentOutput & {
   references: Reference[];
 };
 
+type SubheadingContent = {
+  content: string;
+  wordCount: number;
+  inlineCitations: ChapterResult['inlineCitations'];
+};
+
 export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
   const [isGenerating, startGeneration] = useTransition();
-  const [selectedChapterIndex, setSelectedChapterIndex] = useState<number | null>(0);
-  const [generatedContent, setGeneratedContent] = useState<Record<number, ChapterResult>>({});
+  const [selectedChapterIndex, setSelectedChapterIndex] = useState<number>(0);
+  const [generatedContent, setGeneratedContent] = useState<Record<number, Record<number, SubheadingContent>>>({});
+  const [wordCount, setWordCount] = useState(1000);
   const { toast } = useToast();
-  
-  const selectedChapter = project.outline?.chapters[selectedChapterIndex ?? -1];
 
-  const handleGenerateChapter = () => {
+  const selectedChapter = project.outline?.chapters[selectedChapterIndex];
+
+  const handleGenerateSubheading = (subheadingIndex: number, subheading: string) => {
     if (selectedChapterIndex === null || !selectedChapter) return;
 
     startGeneration(async () => {
-      // Mock references
+      // Mock references - in a real app, this would be more dynamic
       const references: Reference[] = [
         { refId: 'russell-2021', type: 'academic', apa: 'Russell, S. J., & Norvig, P. (2021). Artificial Intelligence: A Modern Approach (4th ed.). Pearson.', meta: { title: 'Artificial Intelligence: A Modern Approach' } },
         { refId: 'bostrom-2014', type: 'academic', apa: 'Bostrom, N. (2014). Superintelligence: Paths, Dangers, Strategies. Oxford University Press.', meta: { title: 'Superintelligence: Paths, Dangers, Strategies' } },
@@ -46,14 +56,14 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
         language: project.language!,
         writingStyle: project.writingStyle!,
         tone: project.tone!,
-        length: 1500, // Target word count
+        length: wordCount, // Use selected word count
         enforceCitations: true,
         category: project.category!,
         depthLevel: 'menengah',
         chapterPlan: {
             title: selectedChapter.title,
             objectives: selectedChapter.objectives,
-            subheadings: selectedChapter.subheadings,
+            subheadings: [subheading], // Generate for a single subheading
         },
         referencesJson: JSON.stringify(references),
         religiousRefsJson: project.category === 'islamic' ? JSON.stringify([
@@ -66,31 +76,83 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
       if (result.error) {
         toast({
           variant: 'destructive',
-          title: 'Gagal Menulis Bab',
+          title: 'Gagal Menulis Sub-bab',
           description: result.error,
         });
       } else if (result.content) {
         setGeneratedContent(prev => ({
           ...prev,
-          [selectedChapterIndex]: { ...result, references: references } as ChapterResult
+          [selectedChapterIndex]: {
+            ...prev[selectedChapterIndex],
+            [subheadingIndex]: {
+                content: result.content,
+                wordCount: result.wordCount,
+                inlineCitations: result.inlineCitations
+            }
+          }
         }));
         toast({
-          title: `Bab ${selectedChapter.index} Berhasil Ditulis`,
-          description: 'Konten untuk bab ini telah siap.',
+          title: `Sub-bab Berhasil Ditulis`,
+          description: `Konten untuk "${subheading}" telah siap.`,
         });
       }
     });
   };
+
+  const getFullChapterContent = (): ChapterResult | null => {
+    if (!selectedChapter || !generatedContent[selectedChapterIndex]) return null;
+
+    const chapterSubheadings = generatedContent[selectedChapterIndex];
+    let fullContent = '';
+    let totalWordCount = 0;
+    let allCitations: ChapterResult['inlineCitations'] = [];
+    const allReferences: Reference[] = [ // MOCK DATA
+        { refId: 'russell-2021', type: 'academic', apa: 'Russell, S. J., & Norvig, P. (2021). Artificial Intelligence: A Modern Approach (4th ed.). Pearson.', meta: { title: 'Artificial Intelligence: A Modern Approach' } },
+        { refId: 'bostrom-2014', type: 'academic', apa: 'Bostrom, N. (2014). Superintelligence: Paths, Dangers, Strategies. Oxford University Press.', meta: { title: 'Superintelligence: Paths, Dangers, Strategies' } },
+        { refId: 'goodfellow-2016', type: 'academic', apa: 'Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep Learning. MIT Press.', meta: { title: 'Deep Learning' } },
+    ];
+
+    selectedChapter.subheadings.forEach((subheading, index) => {
+        const subheadingContent = chapterSubheadings[index];
+        if (subheadingContent) {
+            const contentOffset = fullContent.length;
+            fullContent += `### ${subheading}\n\n${subheadingContent.content}\n\n`;
+            totalWordCount += subheadingContent.wordCount;
+            if (subheadingContent.inlineCitations) {
+                const adjustedCitations = subheadingContent.inlineCitations.map(c => ({
+                    ...c,
+                    spanStart: c.spanStart + contentOffset + subheading.length + 6, // Adjust for subheading title
+                    spanEnd: c.spanEnd + contentOffset + subheading.length + 6,
+                }));
+                allCitations.push(...adjustedCitations);
+            }
+        }
+    });
+
+    return {
+        title: selectedChapter.title,
+        subheadings: selectedChapter.subheadings,
+        content: fullContent,
+        wordCount: totalWordCount,
+        inlineCitations: allCitations,
+        references: allReferences,
+    };
+  }
   
-  const currentChapterContent = generatedContent[selectedChapterIndex ?? -1];
+  const currentFullChapterContent = getFullChapterContent();
 
   const formatContentWithCitations = (content: string, inlineCitations: ChapterResult['inlineCitations'], references: Reference[]): React.ReactNode => {
     if (!inlineCitations || inlineCitations.length === 0) {
-      return content.split('\n').map((p, i) => <p key={i} className="mb-4 leading-relaxed">{p}</p>);
+      return content.split('\n').map((p, i) => {
+        if (p.startsWith('### ')) {
+            return <h3 key={i} className="text-xl font-semibold mt-6 mb-3 text-foreground">{p.replace('### ', '')}</h3>
+        }
+        return <p key={i} className="mb-4 leading-relaxed">{p}</p>
+      });
     }
 
     let lastIndex = 0;
-    const parts: React.ReactNode[] = [];
+    const parts: (string | React.ReactNode)[] = [];
     const sortedCitations = [...inlineCitations].sort((a, b) => a.spanStart - b.spanStart);
 
     sortedCitations.forEach((citation, i) => {
@@ -99,7 +161,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
 
       parts.push(content.substring(lastIndex, citation.spanStart));
       parts.push(
-        <span key={i} className="text-primary font-medium" title={ref?.apa}>
+        <span key={`citation-${i}`} className="text-primary font-medium" title={ref?.apa}>
           {` ${apaText}`}
         </span>
       );
@@ -107,8 +169,23 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
     });
     parts.push(content.substring(lastIndex));
     
-    return parts.join('').split('\n').filter(p => p.trim() !== '').map((p, i) => <p key={i} className="mb-4 leading-relaxed">{p}</p>);
+    const combined = parts.reduce<React.ReactNode[]>((acc, part) => {
+      if (typeof part === 'string') {
+        const lines = part.split('\n').filter(p => p.trim() !== '').map((p, i) => {
+          if (p.startsWith('### ')) {
+            return <h3 key={`h-${i}`} className="text-xl font-semibold mt-6 mb-3 text-foreground">{p.replace('### ', '')}</h3>
+          }
+          return <p key={`p-${i}`} className="mb-4 leading-relaxed">{p}</p>;
+        });
+        return [...acc, ...lines];
+      }
+      return [...acc, part];
+    }, []);
+
+    return combined;
   };
+
+  const isAllSubheadingsGenerated = selectedChapter && generatedContent[selectedChapterIndex] && Object.keys(generatedContent[selectedChapterIndex]).length === selectedChapter.subheadings.length;
 
   return (
     <div className="flex-1 grid md:grid-cols-12 gap-0 min-h-full">
@@ -126,7 +203,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
                 )}
               >
                 <p className="font-semibold text-sm">Bab {chapter.index}: {chapter.title}</p>
-                {generatedContent[index] && <Badge variant="secondary" className="mt-2">Sudah Ditulis</Badge>}
+                {generatedContent[index] && <Badge variant="secondary" className="mt-2">{Object.keys(generatedContent[index]).length}/{chapter.subheadings.length} sub-bab</Badge>}
               </button>
             ))}
           </div>
@@ -139,61 +216,96 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
               <CardHeader>
                 <CardTitle className="text-2xl">Bab {selectedChapter.index}: {selectedChapter.title}</CardTitle>
                 <CardDescription>
-                  {isGenerating ? 'AI sedang menulis, mohon tunggu...' : 
-                  (currentChapterContent ? `Hasil tulisan AI untuk bab ini. (${currentChapterContent.wordCount} kata)` : 'Bab ini siap untuk ditulis oleh AI.')}
+                  Tulis konten per sub-bab. AI akan menggabungkannya menjadi satu bab utuh.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col overflow-y-auto">
-                <div className="border-t border-dashed pt-6">
-                {isGenerating ? (
-                    <div className="flex flex-col items-center justify-center text-center py-12">
-                        <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                        <h3 className="mt-6 text-lg font-medium text-foreground">AI sedang merangkai kata...</h3>
-                        <p className="mt-2 text-sm text-muted-foreground">Ini bisa memakan waktu hingga satu menit. Konten mendalam butuh waktu.</p>
-                    </div>
-                ) : currentChapterContent ? (
-                  <Tabs defaultValue="content">
+                <Tabs defaultValue="generator" className="flex-1 flex flex-col">
                     <TabsList>
-                      <TabsTrigger value="content"><BookText className="mr-2"/>Isi Bab</TabsTrigger>
-                      <TabsTrigger value="references"><FileText className="mr-2"/>Daftar Pustaka</TabsTrigger>
+                      <TabsTrigger value="generator"><Wand2 className="mr-2"/>Generator</TabsTrigger>
+                      <TabsTrigger value="result" disabled={!currentFullChapterContent}><BookText className="mr-2"/>Hasil Bab</TabsTrigger>
+                      <TabsTrigger value="references" disabled={!currentFullChapterContent}><FileText className="mr-2"/>Daftar Pustaka</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="content" className="prose prose-sm max-w-none text-muted-foreground mt-4">
-                      <ScrollArea className="h-[50vh] pr-4">
-                          {formatContentWithCitations(currentChapterContent.content, currentChapterContent.inlineCitations, currentChapterContent.references)}
-                      </ScrollArea>
+                    <TabsContent value="generator" className="flex-1 mt-4">
+                        <div className="mb-6 space-y-3 p-4 border rounded-lg">
+                            <Label htmlFor="word-count" className='font-bold'>Panjang Kata per Sub-bab: {wordCount} kata</Label>
+                            <Slider
+                                id="word-count"
+                                min={500}
+                                max={1500}
+                                step={100}
+                                value={[wordCount]}
+                                onValueChange={(value) => setWordCount(value[0])}
+                                disabled={isGenerating}
+                            />
+                        </div>
+                        <ScrollArea className='h-[calc(50vh-80px)] pr-4'>
+                            <Accordion type="multiple" className="w-full">
+                                {selectedChapter.subheadings.map((subheading, index) => (
+                                    <AccordionItem value={`item-${index}`} key={index}>
+                                        <AccordionTrigger className='text-left'>
+                                            <div className='flex items-center gap-4'>
+                                                {generatedContent[selectedChapterIndex]?.[index] ? 
+                                                    <Badge variant="default">Selesai</Badge> : 
+                                                    <Badge variant="outline">Belum</Badge>
+                                                }
+                                                <span className="font-semibold">{subheading}</span>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent className='pt-4'>
+                                            {generatedContent[selectedChapterIndex]?.[index] ? (
+                                                <div className='prose prose-sm max-w-none text-muted-foreground'>
+                                                    {generatedContent[selectedChapterIndex][index].content.split('\n').map((p,i) => <p key={i}>{p}</p>)}
+                                                </div>
+                                            ) : (
+                                                <div className="text-center py-8 border-2 border-dashed rounded-lg">
+                                                    <Sparkles className="mx-auto h-10 w-10 text-muted-foreground" />
+                                                    <h3 className="mt-3 text-md font-medium text-foreground">Sub-bab ini belum ditulis</h3>
+                                                    <p className="mt-1 text-xs text-muted-foreground mb-4">Siap untuk merangkai kata?</p>
+                                                    <Button onClick={() => handleGenerateSubheading(index, subheading)} disabled={isGenerating}>
+                                                        {isGenerating ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sedang Menulis...</> : `Tulis Sub-bab Ini`}
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
+                        </ScrollArea>
+                    </TabsContent>
+                    <TabsContent value="result" className="prose prose-sm max-w-none text-muted-foreground mt-4">
+                      {currentFullChapterContent ? (
+                        <ScrollArea className="h-[calc(60vh)] pr-4">
+                            {formatContentWithCitations(currentFullChapterContent.content, currentFullChapterContent.inlineCitations, currentFullChapterContent.references)}
+                        </ScrollArea>
+                      ) : (
+                        <p>Generate semua sub-bab untuk melihat hasil bab secara lengkap.</p>
+                      )}
                     </TabsContent>
                     <TabsContent value="references">
-                        <ScrollArea className="h-[50vh] pr-4">
+                        {currentFullChapterContent ? (
+                        <ScrollArea className="h-[60vh] pr-4">
                           <div className="space-y-3 text-sm text-muted-foreground">
                             <h4 className="font-bold text-foreground">Daftar Pustaka</h4>
-                            {currentChapterContent.references.map(ref => (
+                            {currentFullChapterContent.references.map(ref => (
                               <p key={ref.refId}>{ref.apa}</p>
                             ))}
                           </div>
                         </ScrollArea>
+                        ) : (
+                            <p>Generate semua sub-bab untuk melihat daftar pustaka.</p>
+                        )}
                     </TabsContent>
-                  </Tabs>
-                ) : (
-                    <div className="text-center py-20 border-2 border-dashed rounded-lg">
-                        <Sparkles className="mx-auto h-12 w-12 text-muted-foreground" />
-                        <h3 className="mt-4 text-lg font-medium text-foreground">Konten Belum Dibuat</h3>
-                        <p className="mt-1 text-sm text-muted-foreground mb-4">Klik tombol di bawah untuk mulai menulis bab ini.</p>
-                        <Button onClick={handleGenerateChapter} disabled={isGenerating}>
-                            <Wand2 className="mr-2 h-4 w-4" />
-                            {isGenerating ? 'Sedang Menulis...' : `Tulis Bab ${selectedChapter.index}`}
-                        </Button>
-                    </div>
-                )}
-                </div>
+                </Tabs>
               </CardContent>
             </Card>
 
             <div className="mt-auto flex justify-between items-center pt-8 border-t">
-              <Button variant="ghost" onClick={onBack}>
+              <Button variant="ghost" onClick={onBack} disabled={isGenerating}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Kembali ke Outline
               </Button>
-              <Button size="lg" onClick={onComplete}>
+              <Button size="lg" onClick={onComplete} disabled={!isAllSubheadingsGenerated}>
                 Lanjut ke Ekspor
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
