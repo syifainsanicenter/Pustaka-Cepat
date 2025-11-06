@@ -8,6 +8,7 @@ interface LandingPageProps {
   onStart: () => void;
   onLogin: () => void;
   onRegister: () => void;
+  onAdminLogin: () => void;
 }
 
 const workflowSteps = [
@@ -63,7 +64,7 @@ const pricingTiers = [
 ];
 
 
-export function LandingPage({ onStart, onLogin, onRegister }: LandingPageProps) {
+export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: LandingPageProps) {
   const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
 
   return (
@@ -219,7 +220,8 @@ export function LandingPage({ onStart, onLogin, onRegister }: LandingPageProps) 
 
       <footer className="bg-foreground text-background mt-auto">
         <div className="container mx-auto px-4 md:px-6 py-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Pustaka Cepat AI. Semua hak dilindungi.</p>
+          <a href="#" onClick={(e) => { e.preventDefault(); onAdminLogin(); }} className="hover:text-primary">Admin Login</a>
+          <p className='mt-2'>&copy; {new Date().getFullYear()} Pustaka Cepat AI. Semua hak dilindungi.</p>
         </div>
       </footer>
     </div>

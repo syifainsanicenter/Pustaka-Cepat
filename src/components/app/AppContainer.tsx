@@ -16,8 +16,9 @@ import { ChapterStep, type ChapterContent } from './ChapterStep';
 import { ExportStep } from './ExportStep';
 import { FirebaseClientProvider, useUser } from '@/firebase';
 import { AdminPage } from './AdminPage';
+import { AdminLogin } from '../auth/AdminLogin';
 
-export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register' | 'admin';
+export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register' | 'admin' | 'admin-login';
 
 const ADMIN_EMAIL = 'syifainsanicenter@gmail.com';
 
@@ -46,9 +47,15 @@ function AppContent() {
 
   const handleLoginSuccess = () => {
     setUsageCount(0); // Reset usage count on login
+    setStep('category');
+  };
+  
+  const handleAdminLoginSuccess = () => {
+    setUsageCount(0); // Reset usage count on login
     if (user?.email === ADMIN_EMAIL) {
       setStep('admin');
     } else {
+      // If a non-admin user somehow used the admin login, send them to the regular app
       setStep('category');
     }
   };
@@ -97,7 +104,7 @@ function AppContent() {
     if (step === 'outline') setStep('style');
     if (step === 'chapter') setStep('outline');
     if (step === 'export') setStep('chapter');
-    if (step === 'login' || step === 'register') setStep('landing');
+    if (step === 'login' || step === 'register' || step === 'admin-login') setStep('landing');
     if (step === 'admin' && user?.email !== ADMIN_EMAIL) setStep('category');
   }
   
@@ -110,7 +117,7 @@ function AppContent() {
   const renderStep = () => {
     switch (step) {
       case 'landing':
-        return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} />;
+        return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} onAdminLogin={() => setStep('admin-login')} />;
       case 'category':
         return <CategoryStep onSelect={handleCategorySelect} onBack={handleBack}/>;
       case 'ideation':
@@ -129,14 +136,16 @@ function AppContent() {
         return <Register onBack={handleBack} onSwitchToLogin={() => setStep('login')} onRegisterSuccess={handleRegisterSuccess} />;
       case 'admin':
         return <AdminPage onBack={() => setStep('category')} />;
+      case 'admin-login':
+        return <AdminLogin onBack={handleBack} onLoginSuccess={handleAdminLoginSuccess} />;
       default:
-        return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} />;
+        return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} onAdminLogin={() => setStep('admin-login')} />;
     }
   };
 
   return (
     <div className="flex flex-col flex-1">
-      {(step !== 'landing' && step !== 'login' && step !== 'register') && <AppHeader step={step} onLogout={handleLogout} onGoToAdmin={handleGoToAdmin} isAdmin={user?.email === ADMIN_EMAIL} />}
+      {(step !== 'landing' && step !== 'login' && step !== 'register' && step !== 'admin-login') && <AppHeader step={step} onLogout={handleLogout} onGoToAdmin={handleGoToAdmin} isAdmin={user?.email === ADMIN_EMAIL} />}
       <main className="flex-1 flex flex-col">{renderStep()}</main>
     </div>
   );
