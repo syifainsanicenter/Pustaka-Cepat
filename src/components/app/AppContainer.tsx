@@ -15,8 +15,11 @@ import { StyleStep } from './StyleStep';
 import { ChapterStep, type ChapterContent } from './ChapterStep';
 import { ExportStep } from './ExportStep';
 import { FirebaseClientProvider, useUser } from '@/firebase';
+import { AdminPage } from './AdminPage';
 
-export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register';
+export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register' | 'admin';
+
+const ADMIN_EMAIL = 'syifainsanicenter@gmail.com';
 
 function AppContent() {
   const { user, loading } = useUser();
@@ -43,7 +46,11 @@ function AppContent() {
 
   const handleLoginSuccess = () => {
     setUsageCount(0); // Reset usage count on login
-    setStep('category');
+    if (user?.email === ADMIN_EMAIL) {
+      setStep('admin');
+    } else {
+      setStep('category');
+    }
   };
 
   const handleRegisterSuccess = () => {
@@ -91,7 +98,14 @@ function AppContent() {
     if (step === 'chapter') setStep('outline');
     if (step === 'export') setStep('chapter');
     if (step === 'login' || step === 'register') setStep('landing');
+    if (step === 'admin' && user?.email !== ADMIN_EMAIL) setStep('category');
   }
+  
+  const handleGoToAdmin = () => {
+    if (user?.email === ADMIN_EMAIL) {
+      setStep('admin');
+    }
+  };
 
   const renderStep = () => {
     switch (step) {
@@ -113,6 +127,8 @@ function AppContent() {
         return <Login onBack={handleBack} onSwitchToRegister={() => setStep('register')} onLoginSuccess={handleLoginSuccess} />;
       case 'register':
         return <Register onBack={handleBack} onSwitchToLogin={() => setStep('login')} onRegisterSuccess={handleRegisterSuccess} />;
+      case 'admin':
+        return <AdminPage onBack={() => setStep('category')} />;
       default:
         return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} />;
     }
@@ -120,7 +136,7 @@ function AppContent() {
 
   return (
     <div className="flex flex-col flex-1">
-      {(step !== 'landing' && step !== 'login' && step !== 'register') && <AppHeader step={step} onLogout={handleLogout} />}
+      {(step !== 'landing' && step !== 'login' && step !== 'register') && <AppHeader step={step} onLogout={handleLogout} onGoToAdmin={handleGoToAdmin} isAdmin={user?.email === ADMIN_EMAIL} />}
       <main className="flex-1 flex flex-col">{renderStep()}</main>
     </div>
   );

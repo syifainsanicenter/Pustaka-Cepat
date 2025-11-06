@@ -1,14 +1,16 @@
-import { BookHeart, ChevronDown, LogOut, UserCircle } from 'lucide-react';
+import { BookHeart, ChevronDown, LogOut, UserCircle, Shield } from 'lucide-react';
 import type { AppStep } from './AppContainer';
 import { cn } from '@/lib/utils';
 import { useAuth, useUser } from '@/firebase';
 import { Button } from '../ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface AppHeaderProps {
   step: AppStep;
   onLogout: () => void;
+  onGoToAdmin?: () => void;
+  isAdmin?: boolean;
 }
 
 const steps = [
@@ -20,7 +22,7 @@ const steps = [
   { id: 'export', name: 'Ekspor' },
 ];
 
-function UserMenu({ onLogout }: { onLogout: () => void }) {
+function UserMenu({ onLogout, onGoToAdmin, isAdmin }: { onLogout: () => void; onGoToAdmin?: () => void; isAdmin?: boolean; }) {
   const { user } = useUser();
   const auth = useAuth();
 
@@ -46,6 +48,15 @@ function UserMenu({ onLogout }: { onLogout: () => void }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        {isAdmin && (
+          <>
+            <DropdownMenuItem onClick={onGoToAdmin}>
+              <Shield className="mr-2" />
+              Admin Panel
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2" />
           Logout
@@ -56,7 +67,7 @@ function UserMenu({ onLogout }: { onLogout: () => void }) {
 }
 
 
-export function AppHeader({ step, onLogout }: AppHeaderProps) {
+export function AppHeader({ step, onLogout, onGoToAdmin, isAdmin }: AppHeaderProps) {
   const currentStepIndex = steps.findIndex(s => s.id === step);
 
   return (
@@ -79,7 +90,7 @@ export function AppHeader({ step, onLogout }: AppHeaderProps) {
             </div>
           ))}
         </div>
-        <UserMenu onLogout={onLogout} />
+        <UserMenu onLogout={onLogout} onGoToAdmin={onGoToAdmin} isAdmin={isAdmin} />
       </div>
     </header>
   );

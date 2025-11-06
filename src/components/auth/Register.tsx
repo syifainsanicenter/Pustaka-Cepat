@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/firebase";
+import { useAuth, useFirestore } from "@/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
 
@@ -19,14 +20,16 @@ interface RegisterProps {
 
 export function Register({ onBack, onSwitchToLogin, onRegisterSuccess }: RegisterProps) {
     const auth = useAuth();
+    const firestore = useFirestore();
     const { toast } = useToast();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [plan, setPlan] = useState('free');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleRegister = async () => {
-        if (!auth) {
+        if (!auth || !firestore) {
             toast({ variant: 'destructive', title: 'Error', description: 'Firebase not initialized.' });
             return;
         }
@@ -39,6 +42,15 @@ export function Register({ onBack, onSwitchToLogin, onRegisterSuccess }: Registe
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(userCredential.user, { displayName: name });
             
+            // Store user info in Firestore
+            await setDoc(doc(firestore, "users", userCredential.user.uid), {
+                uid: userCredential.user.uid,
+                displayName: name,
+                email: email,
+                plan: plan,
+                createdAt: new Date(),
+            });
+
             toast({ title: 'Pendaftaran Berhasil', description: 'Akun Anda telah dibuat. Selamat datang!' });
             onRegisterSuccess();
         } catch (error: any) {
@@ -80,7 +92,7 @@ export function Register({ onBack, onSwitchToLogin, onRegisterSuccess }: Registe
                         </div>
                         <div className="space-y-4">
                             <Label>Pilih Paket</Label>
-                            <RadioGroup defaultValue="free" className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <RadioGroup value={plan} onValueChange={setPlan} className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <RadioGroupItem value="free" id="free" className="peer sr-only" />
                                     <Label htmlFor="free" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
