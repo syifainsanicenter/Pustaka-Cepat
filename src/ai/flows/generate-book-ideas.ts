@@ -16,8 +16,7 @@ const GenerateBookIdeasInputSchema = z.object({
   category: z
     .string()
     .describe(
-      'The category of the book (e.g., academic, textbook, monograph, popular, islamic).' + 
-      'Options: academic|buku_ajar|monograf|populer|islam'
+      'The category of the book (e.g., academic, textbook, monograph, popular, islamic).'
     ),
   audience: z.string().describe('The target audience (e.g., undergraduate students, high school teachers).'),
   goal: z.string().describe('The goal of the book (e.g., a semester 1 textbook).'),
@@ -55,7 +54,7 @@ const generateIdeasPrompt = ai.definePrompt({
 PROJECT:
 
 Judul sementara: {{{projectTitle}}}
-Kategori: {{{category}}} (opsi: akademik|buku_ajar|monograf|populer|islam)
+Kategori: {{{category}}} (opsi: akademik|buku_ajar|monograf|populer|islamic)
 Audiens: {{{audience}}} (mis: mahasiswa S1, guru SMA, jamaah remaja)
 Tujuan: {{{goal}}} (mis: buku ajar semester 1)
 Bahasa: {{{language}}}
@@ -76,5 +75,3 @@ const generateBookIdeasFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    

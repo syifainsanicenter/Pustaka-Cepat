@@ -17,7 +17,7 @@ const categories = [
   { id: 'buku_ajar', title: 'Buku Ajar', description: 'Materi pengajaran untuk siswa atau mahasiswa.', icon: BookCopy },
   { id: 'monograf', title: 'Monograf', description: 'Kajian mendalam tentang satu topik spesifik.', icon: BookMarked },
   { id: 'populer', title: 'Populer', description: 'Tulisan yang mudah diakses untuk audiens umum.', icon: Users },
-  { id: 'islam', title: 'Islam', description: 'Buku dengan referensi Al-Qur\'an dan Hadis.', icon: MoonStar, featured: true },
+  { id: 'islamic', title: 'Islam', description: 'Buku dengan referensi Al-Qur\'an dan Hadis.', icon: MoonStar, featured: true },
 ] as const;
 
 export function CategoryStep({ onSelect, onBack }: CategoryStepProps) {
