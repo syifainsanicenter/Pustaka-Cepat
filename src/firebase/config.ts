@@ -8,12 +8,12 @@
 // The following is an example of what the configuration might look
 // like.
 //
-// export const firebaseConfig = {
-//   apiKey: "AIza....",
-//   authDomain: "your-project.firebaseapp.com",
-//   projectId: "your-project",
-//   storageBucket: "your-project.appspot.com",
-//   messagingSenderId: "...",
-//   appId: "1:...",
-//   measurementId: "G-...",
-// };
+export const firebaseConfig = {
+  apiKey: "AIza....",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "...",
+  appId: "1:...",
+  measurementId: "G-...",
+};
