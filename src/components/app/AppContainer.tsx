@@ -62,9 +62,9 @@ export function AppContainer() {
       case 'outline':
         return <OutlineStep project={project} onBack={handleBack} />;
       case 'login':
-        return <Login onBack={handleBack} />;
+        return <Login onBack={handleBack} onSwitchToRegister={() => setStep('register')} />;
       case 'register':
-        return <Register onBack={handleBack} />;
+        return <Register onBack={handleBack} onSwitchToLogin={() => setStep('login')} />;
       default:
         return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} />;
     }

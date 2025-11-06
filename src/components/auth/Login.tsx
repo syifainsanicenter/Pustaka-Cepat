@@ -8,9 +8,10 @@ import { ArrowLeft } from "lucide-react";
 
 interface LoginProps {
     onBack: () => void;
+    onSwitchToRegister: () => void;
 }
 
-export function Login({ onBack }: LoginProps) {
+export function Login({ onBack, onSwitchToRegister }: LoginProps) {
     return (
         <div className="flex-1 flex items-center justify-center bg-muted">
             <div className="w-full max-w-md p-4">
@@ -36,7 +37,7 @@ export function Login({ onBack }: LoginProps) {
                     <CardFooter className="flex flex-col gap-4">
                         <Button className="w-full">Login</Button>
                         <p className="text-xs text-center text-muted-foreground">
-                            Belum punya akun? <a href="#" className="underline text-primary">Daftar di sini</a>
+                            Belum punya akun? <a href="#" onClick={(e) => { e.preventDefault(); onSwitchToRegister(); }} className="underline text-primary">Daftar di sini</a>
                         </p>
                     </CardFooter>
                 </Card>
