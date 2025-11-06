@@ -35,6 +35,13 @@ export function AppContainer() {
     }
   };
 
+  const handleRegisterSuccess = () => {
+    // For now, just reset usage and go to category.
+    // In a real app, this would involve user authentication.
+    setUsageCount(0);
+    setStep('category');
+  };
+
   const handleCategorySelect = (category: ProjectCategory) => {
     setProject((p) => ({ ...p, category }));
     setUsageCount(prev => prev + 1);
@@ -79,7 +86,7 @@ export function AppContainer() {
       case 'login':
         return <Login onBack={handleBack} onSwitchToRegister={() => setStep('register')} />;
       case 'register':
-        return <Register onBack={handleBack} onSwitchToLogin={() => setStep('login')} />;
+        return <Register onBack={handleBack} onSwitchToLogin={() => setStep('login')} onRegisterSuccess={handleRegisterSuccess} />;
       default:
         return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} />;
     }

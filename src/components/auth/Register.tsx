@@ -10,9 +10,10 @@ import { ArrowLeft } from "lucide-react";
 interface RegisterProps {
     onBack: () => void;
     onSwitchToLogin: () => void;
+    onRegisterSuccess: () => void;
 }
 
-export function Register({ onBack, onSwitchToLogin }: RegisterProps) {
+export function Register({ onBack, onSwitchToLogin, onRegisterSuccess }: RegisterProps) {
     return (
         <div className="flex-1 flex items-center justify-center bg-muted py-12">
             <div className="w-full max-w-lg p-4">
@@ -66,7 +67,7 @@ export function Register({ onBack, onSwitchToLogin }: RegisterProps) {
                         </div>
                     </CardContent>
                     <CardFooter className="flex flex-col gap-4">
-                        <Button className="w-full">Buat Akun</Button>
+                        <Button className="w-full" onClick={onRegisterSuccess}>Buat Akun</Button>
                          <p className="text-xs text-center text-muted-foreground">
                             Sudah punya akun? <a href="#" onClick={(e) => { e.preventDefault(); onSwitchToLogin(); }} className="underline text-primary">Login di sini</a>
                         </p>
