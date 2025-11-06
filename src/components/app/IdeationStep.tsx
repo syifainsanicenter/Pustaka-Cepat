@@ -146,6 +146,55 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="writingStyle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gaya Penulisan</FormLabel>
+                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Pilih gaya penulisan" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="akademik ketat">Akademik Ketat</SelectItem>
+                          <SelectItem value="populer ilmiah">Populer Ilmiah</SelectItem>
+                          <SelectItem value="jurnalistik investigatif">Jurnalistik Investigatif</SelectItem>
+                          <SelectItem value="naratif historis">Naratif Historis</SelectItem>
+                          <SelectItem value="dakwah persuasif">Dakwah Persuasif</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="tone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gaya Bahasa</FormLabel>
+                     <Select onValuecha
+nge={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Pilih gaya bahasa" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="formal">Formal</SelectItem>
+                          <SelectItem value="semi-formal">Semi-Formal</SelectItem>
+                          <SelectItem value="informal">Informal</SelectItem>
+                          <SelectItem value="objektif">Objektif</SelectItem>
+                          <SelectItem value="inspiratif">Inspiratif</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <Button type="submit" disabled={isPending} className="w-full">
                 {isPending ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -233,5 +282,3 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
     </div>
   );
 }
-
-    
