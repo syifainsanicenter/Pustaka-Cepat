@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { generateChapterAction } from '@/app/actions';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { cn } from '@/lib/utils';
 
 interface ChapterStepProps {
   project: Project;
