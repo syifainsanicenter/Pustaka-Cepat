@@ -8,6 +8,7 @@ import { CategoryStep } from './CategoryStep';
 import { IdeationStep } from './IdeationStep';
 import { OutlineStep } from './OutlineStep';
 import type { GenerateBookIdeasOutput } from '@/ai/flows/generate-book-ideas';
+import type { CreateStructuredOutlineOutput } from '@/ai/flows/create-structured-outline';
 import { Login } from '@/components/auth/Login';
 import { Register } from '@/components/auth/Register';
 
@@ -43,6 +44,11 @@ export function AppContainer() {
     setProject(p => ({ ...p, ideas, chosenIdea }));
     setStep('outline');
   };
+  
+  const handleOutlineComplete = (outline: CreateStructuredOutlineOutput) => {
+    setProject(p => ({ ...p, outline }));
+    setStep('chapter');
+  };
 
   const handleBack = () => {
     if (step === 'ideation') setStep('category');
@@ -60,7 +66,7 @@ export function AppContainer() {
       case 'ideation':
         return <IdeationStep project={project} onComplete={handleIdeationComplete} onBack={handleBack} />;
       case 'outline':
-        return <OutlineStep project={project} onBack={handleBack} />;
+        return <OutlineStep project={project} onBack={handleBack} onComplete={handleOutlineComplete} />;
       case 'login':
         return <Login onBack={handleBack} onSwitchToRegister={() => setStep('register')} />;
       case 'register':

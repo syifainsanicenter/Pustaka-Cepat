@@ -1,6 +1,7 @@
 'use server';
 
 import { generateBookIdeas, type GenerateBookIdeasInput } from '@/ai/flows/generate-book-ideas';
+import { createStructuredOutline, type CreateStructuredOutlineInput } from '@/ai/flows/create-structured-outline';
 import { z } from 'zod';
 
 const ActionError = z.object({
@@ -12,6 +13,19 @@ export async function generateIdeasAction(input: GenerateBookIdeasInput) {
     const output = await generateBookIdeas(input);
     if (!output || !output.ideas) {
       return { error: 'Gagal menghasilkan ide. Silakan coba lagi.' };
+    }
+    return output;
+  } catch (e: any) {
+    console.error(e);
+    return { error: e.message || 'Terjadi kesalahan pada server.' };
+  }
+}
+
+export async function createOutlineAction(input: CreateStructuredOutlineInput) {
+  try {
+    const output = await createStructuredOutline(input);
+    if (!output || !output.chapters) {
+      return { error: 'Gagal membuat outline. Silakan coba lagi.' };
     }
     return output;
   } catch (e: any) {
