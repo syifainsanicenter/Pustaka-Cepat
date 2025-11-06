@@ -9,11 +9,11 @@
 // like.
 //
 export const firebaseConfig = {
-  apiKey: "AIza....",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "...",
-  appId: "1:...",
-  measurementId: "G-...",
+  apiKey: 'AIzaSyA88y8e89p1s7oZ3WdEp2agcYvWmyiOLrs',
+  authDomain: 'pustaka-cepat.firebaseapp.com',
+  projectId: 'pustaka-cepat',
+  storageBucket: 'pustaka-cepat.appspot.com',
+  messagingSenderId: '228308432367',
+  appId: '1:228308432367:web:ef0a7479713b94236a2818',
+  measurementId: 'G-JBCX1P21S1',
 };
