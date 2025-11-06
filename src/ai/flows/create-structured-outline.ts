@@ -58,7 +58,7 @@ const prompt = ai.definePrompt({
   name: 'createStructuredOutlinePrompt',
   input: {schema: CreateStructuredOutlineInputSchema.extend({ isIslamic: z.boolean() })},
   output: {schema: CreateStructuredOutlineOutputSchema},
-  prompt: `TUGAS: Susun outline buku terstruktur {{{chaptersCount}}} bab untuk proyek di bawah ini. PASTIKAN SEMUA OUTPUT DALAM BAHASA YANG TELAH DITENTUKAN.
+  prompt: `TUGAS: Susun outline buku terstruktur {{{chaptersCount}}} bab untuk proyek di bawah ini. PASTIKAN SEMUA OUTPUT TEKS DALAM BAHASA YANG TELAH DITENTUKAN.
 PROJECT:
 
 Judul: {{{chosenIdeaTitle}}}

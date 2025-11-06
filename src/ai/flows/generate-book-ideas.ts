@@ -50,7 +50,7 @@ const generateIdeasPrompt = ai.definePrompt({
   name: 'generateIdeasPrompt',
   input: {schema: GenerateBookIdeasInputSchema},
   output: {schema: GenerateBookIdeasOutputSchema},
-  prompt: `TUGAS: Buat 10 ide buku yang kuat dan sangat relevan untuk proyek berikut.
+  prompt: `TUGAS: Buat 10 ide buku yang kuat dan sangat relevan untuk proyek berikut. PASTIKAN SEMUA OUTPUT TEKS DALAM BAHASA YANG TELAH DITENTUKAN.
 PROJECT:
 
 Judul sementara: {{{projectTitle}}}
@@ -60,7 +60,7 @@ Tujuan: {{{goal}}} (mis: buku ajar semester 1)
 Bahasa: {{{language}}}
 Gaya penulisan: {{{writingStyle}}} (mis: akademik ketat, populer ilmiah, dakwah persuasif)
 Gaya bahasa: {{{tone}}} (mis: formal, semi-formal)
-KELUARAN WAJIB: JSON dengan 10 item dalam ideas[]. Sertakan angle singkat, rationale (2–3 kalimat), dan audienceFitScore (0-100) yang benar-benar mencerminkan kesesuaian dengan audiens dan tujuan.
+KELUARAN WAJIB: JSON dengan 10 item dalam ideas[]. Sertakan angle singkat, rationale (2–3 kalimat), dan audienceFitScore (0-100) yang benar-benar mencerminkan kesesuaian dengan audiens dan tujuan. Semua teks harus dalam bahasa: {{{language}}}.
 PENTING: Setiap ide harus unik, memiliki diferensiasi yang jelas, dan sangat sesuai dengan permintaan. Hindari konsep yang terlalu umum.`,
 });
 

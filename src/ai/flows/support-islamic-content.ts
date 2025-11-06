@@ -46,10 +46,10 @@ Available References (JSON format):
 Instructions:
 1.  Analyze the provided JSON of references.
 2.  Select the reference that is most relevant to the topic.
-3.  Provide the arabText (if available), a short translation (in {{{language}}}), and the reference (rujukan).
-4.  If no suitable reference is found, explain why in the todoRef field (in {{{language}}}).
-5. If a refId was used from the JSON, include it in the output.
-6. Notes should also be in {{{language}}}.
+3.  Provide the arabText (if available), a short translation, and the reference (rujukan).
+4.  If no suitable reference is found, explain why in the todoRef field.
+5.  If a refId was used from the JSON, include it in the output.
+6.  ALL TEXT OUTPUTS (translation, notes, todoRef) MUST BE IN THE SPECIFIED LANGUAGE: {{{language}}}.
 
 Output JSON: {
   "arabText": "The Arabic text of the Quranic verse or Hadith.",
@@ -72,7 +72,6 @@ const insertIslamicReferenceFlow = ai.defineFlow(
   },
   async input => {
     try {
-      // This flow is now fully handled by the LLM prompt.
       const {output} = await prompt(input);
       return output!;
     } catch (error) {

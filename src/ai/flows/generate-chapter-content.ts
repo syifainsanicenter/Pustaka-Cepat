@@ -97,7 +97,7 @@ PENTING:
 Gunakan hanya referensi di atas untuk sitasi; jika kurang, isi newRefSuggestions dan todoRef (jangan karang DOI/URL).
 Sisipkan sitasi inline (Author, Tahun) di bagian yang relevan.
 Jika ada dalil: tampilkan teks Arab, kemudian translasi pendek (dalam kurung), dan rujukan (Qur’an S:X) atau (Koleksi, no).
-Keluarkan hanya JSON sesuai skema. Isi inlineCitations dengan rentang karakter berdasarkan content.`,
+Keluarkan hanya JSON sesuai skema. Isi inlineCitations dengan rentang karakter berdasarkan content. Semua teks (content, suggestions, etc) harus dalam bahasa: {{{language}}}.`,
 });
 
 const generateChapterContentFlow = ai.defineFlow(

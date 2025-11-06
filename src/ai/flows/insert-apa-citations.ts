@@ -56,25 +56,21 @@ Instructions:
 1.  Analyze the text and identify where citations are needed to support the claims and ideas presented.
 2.  For each citation, find the most relevant reference from the provided referencesJson.
 3.  Insert the citation in APA format (Author, Year) at the end of the sentence or clause where it is relevant.
-4.  If a suitable reference is not found, add a suggestion to newRefSuggestions (in the specified language).
+4.  If a suitable reference is not found, add a suggestion to newRefSuggestions.
 5.  Ensure that the spanStart and spanEnd values in the inlineCitations array correctly indicate the position of the citation in the output text.
-6.  If there's anything else to note add to the todoRef (in the specified language).
+6.  If there's anything else to note add to the todoRef.
 7.  Estimate word count of content.
+8.  ALL TEXT OUTPUTS (content, suggestions, todos, warnings) MUST BE IN THE SPECIFIED LANGUAGE: {{{language}}}.
 
 Output:
 Return a JSON object with the following fields:
-- content: The updated text with inline citations (in the specified language).
+- content: The updated text with inline citations.
 - inlineCitations: An array of objects, each with spanStart, spanEnd, and refId.
 - newRefSuggestions: (Optional) An array of strings with suggestions for new references.
 - todoRef: (Optional) A string indicating that a reference is missing or needs to be added.
 - warnings: (Optional) An array of strings with any warnings or issues encountered.
 - wordCount: estimated word count of content.
-
-Example:
-Input:
-text: "This is a sentence that needs a citation. Another sentence here."
-referencesJson: '[{\
-`
+`,
 });
 
 const insertApaCitationsFlow = ai.defineFlow(
