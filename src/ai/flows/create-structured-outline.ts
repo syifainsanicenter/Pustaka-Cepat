@@ -18,7 +18,7 @@ const CreateStructuredOutlineInputSchema = z.object({
     .describe(
       'The category of the book (e.g., academic, textbook, monograph, popular, islam).' // Corrected typo here
     ),
-  language: z.string().describe('The language of the book (id/en/ar).'),
+  language: z.string().describe('The language of the book (id/en/ar/su/jv/zh).'),
   writingStyle: z.string().describe('The writing style of the book.'),
   tone: z.string().describe('The tone of the book.'),
   audience: z.string().describe('The target audience for the book.'),
@@ -83,3 +83,5 @@ const createStructuredOutlineFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    

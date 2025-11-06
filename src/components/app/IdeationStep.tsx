@@ -28,7 +28,7 @@ const formSchema = z.object({
   projectTitle: z.string().min(5, 'Judul proyek minimal 5 karakter.'),
   audience: z.string().min(5, 'Audiens minimal 5 karakter.'),
   goal: z.string().min(5, 'Tujuan minimal 5 karakter.'),
-  language: z.enum(['id', 'en', 'ar']),
+  language: z.enum(['id', 'en', 'ar', 'su', 'jv', 'zh']),
   writingStyle: z.string().min(3, 'Gaya penulisan harus diisi.'),
   tone: z.string().min(3, 'Gaya bahasa harus diisi.'),
 });
@@ -137,6 +137,9 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
                           <SelectItem value="id">Indonesia</SelectItem>
                           <SelectItem value="en">Inggris</SelectItem>
                           <SelectItem value="ar">Arab</SelectItem>
+                          <SelectItem value="su">Sunda</SelectItem>
+                          <SelectItem value="jv">Jawa</SelectItem>
+                          <SelectItem value="zh">Mandarin</SelectItem>
                         </SelectContent>
                       </Select>
                     <FormMessage />
@@ -230,3 +233,5 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
     </div>
   );
 }
+
+    

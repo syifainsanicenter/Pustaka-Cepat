@@ -21,7 +21,7 @@ const GenerateBookIdeasInputSchema = z.object({
     ),
   audience: z.string().describe('The target audience (e.g., undergraduate students, high school teachers).'),
   goal: z.string().describe('The goal of the book (e.g., a semester 1 textbook).'),
-  language: z.string().describe('The language of the book (id/en/ar).'),
+  language: z.string().describe('The language of the book (id/en/ar/su/jv/zh).'),
   writingStyle: z.string().describe('The writing style (e.g., strict academic, popular science, persuasive preaching).'),
   tone: z.string().describe('The tone of the book (e.g., formal, semi-formal).'),
 });
@@ -76,3 +76,5 @@ const generateBookIdeasFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    
