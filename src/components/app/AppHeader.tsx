@@ -1,9 +1,14 @@
-import { BookHeart } from 'lucide-react';
+import { BookHeart, ChevronDown, LogOut, UserCircle } from 'lucide-react';
 import type { AppStep } from './AppContainer';
 import { cn } from '@/lib/utils';
+import { useAuth, useUser } from '@/firebase';
+import { Button } from '../ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface AppHeaderProps {
   step: AppStep;
+  onLogout: () => void;
 }
 
 const steps = [
@@ -15,7 +20,43 @@ const steps = [
   { id: 'export', name: 'Ekspor' },
 ];
 
-export function AppHeader({ step }: AppHeaderProps) {
+function UserMenu({ onLogout }: { onLogout: () => void }) {
+  const { user } = useUser();
+  const auth = useAuth();
+
+  const handleLogout = async () => {
+    if (auth) {
+      await auth.signOut();
+      onLogout();
+    }
+  };
+
+  if (!user) return null;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="flex items-center gap-2">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+            <AvatarFallback>{user.displayName?.charAt(0) || user.email?.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <span className="hidden md:inline">{user.displayName || user.email}</span>
+          <ChevronDown className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut className="mr-2" />
+          Logout
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+
+export function AppHeader({ step, onLogout }: AppHeaderProps) {
   const currentStepIndex = steps.findIndex(s => s.id === step);
 
   return (
@@ -38,6 +79,7 @@ export function AppHeader({ step }: AppHeaderProps) {
             </div>
           ))}
         </div>
+        <UserMenu onLogout={onLogout} />
       </div>
     </header>
   );

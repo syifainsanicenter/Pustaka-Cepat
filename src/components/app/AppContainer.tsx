@@ -14,14 +14,16 @@ import { Register } from '@/components/auth/Register';
 import { StyleStep } from './StyleStep';
 import { ChapterStep, type ChapterContent } from './ChapterStep';
 import { ExportStep } from './ExportStep';
+import { FirebaseClientProvider, useUser } from '@/firebase';
 
 export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register';
 
-export function AppContainer() {
+function AppContent() {
+  const { user, loading } = useUser();
   const [step, setStep] = useState<AppStep>('landing');
   const [project, setProject] = useState<Project>({
     projectTitle: 'Kecerdasan Buatan dalam Pendidikan Islam',
-    audience: 'Mahasiswa S1, Dosen, Peneliti Pendidikan',
+    audience: 'Mahasiswa S1',
     goal: 'Menjadi referensi utama tentang penerapan AI di lembaga pendidikan Islam',
     language: 'id',
     writingStyle: 'akademik ketat',
@@ -32,7 +34,7 @@ export function AppContainer() {
   const [chapterContent, setChapterContent] = useState<ChapterContent>({});
 
   const handleStart = () => {
-    if (usageCount > 0) {
+    if (!user && usageCount > 0) {
       setStep('register');
     } else {
       setStep('category');
@@ -40,18 +42,24 @@ export function AppContainer() {
   };
 
   const handleLoginSuccess = () => {
-    setUsageCount(0);
+    setUsageCount(0); // Reset usage count on login
     setStep('category');
   };
 
   const handleRegisterSuccess = () => {
-    setUsageCount(0);
+    setUsageCount(0); // Reset usage count on register
     setStep('category');
+  };
+
+  const handleLogout = () => {
+    setStep('landing');
   };
 
   const handleCategorySelect = (category: ProjectCategory) => {
     setProject((p) => ({ ...p, category }));
-    setUsageCount(prev => prev + 1);
+    if (!user) {
+        setUsageCount(prev => prev + 1);
+    }
     setStep('ideation');
   };
   
@@ -112,8 +120,17 @@ export function AppContainer() {
 
   return (
     <div className="flex flex-col flex-1">
-      {(step !== 'landing' && step !== 'login' && step !== 'register') && <AppHeader step={step} />}
+      {(step !== 'landing' && step !== 'login' && step !== 'register') && <AppHeader step={step} onLogout={handleLogout} />}
       <main className="flex-1 flex flex-col">{renderStep()}</main>
     </div>
   );
+}
+
+
+export function AppContainer() {
+  return (
+    <FirebaseClientProvider>
+      <AppContent />
+    </FirebaseClientProvider>
+  )
 }
