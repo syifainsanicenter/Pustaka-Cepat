@@ -41,7 +41,7 @@ export function OutlineStep({ project, onBack, onComplete }: OutlineStepProps) {
       
       const input = {
         chosenIdeaTitle: project.chosenIdea.title,
-        category: project.category,
+        category: project.category === 'islam' ? 'islamic' : project.category,
         language: project.language,
         writingStyle: project.writingStyle,
         tone: project.tone,
@@ -173,7 +173,7 @@ export function OutlineStep({ project, onBack, onComplete }: OutlineStepProps) {
       <div className="mt-auto flex justify-between items-center pt-8 border-t">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Kembali ke Ide
+          Kembali ke Gaya
         </Button>
         <Button size="lg" disabled={!outline || isPending} onClick={() => outline && onComplete(outline)}>
           Lanjut Tulis Bab

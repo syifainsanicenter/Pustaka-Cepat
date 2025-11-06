@@ -11,6 +11,7 @@ import type { GenerateBookIdeasOutput } from '@/ai/flows/generate-book-ideas';
 import type { CreateStructuredOutlineOutput } from '@/ai/flows/create-structured-outline';
 import { Login } from '@/components/auth/Login';
 import { Register } from '@/components/auth/Register';
+import { StyleStep } from './StyleStep';
 
 export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register';
 
@@ -42,6 +43,11 @@ export function AppContainer() {
   
   const handleIdeationComplete = (ideas: GenerateBookIdeasOutput['ideas'], chosenIdea: GenerateBookIdeasOutput['ideas'][0]) => {
     setProject(p => ({ ...p, ideas, chosenIdea }));
+    setStep('style');
+  };
+  
+  const handleStyleComplete = (style: { writingStyle: string; tone: string; language: 'id' | 'en' | 'ar' | 'su' | 'jv' | 'zh' }) => {
+    setProject(p => ({ ...p, ...style }));
     setStep('outline');
   };
   
@@ -53,7 +59,8 @@ export function AppContainer() {
   const handleBack = () => {
     if (step === 'ideation') setStep('category');
     if (step === 'category') setStep('landing');
-    if (step === 'outline') setStep('ideation');
+    if (step === 'style') setStep('ideation');
+    if (step === 'outline') setStep('style');
     if (step === 'login' || step === 'register') setStep('landing');
   }
 
@@ -65,6 +72,8 @@ export function AppContainer() {
         return <CategoryStep onSelect={handleCategorySelect} onBack={handleBack}/>;
       case 'ideation':
         return <IdeationStep project={project} onComplete={handleIdeationComplete} onBack={handleBack} />;
+      case 'style':
+        return <StyleStep project={project} onBack={handleBack} onComplete={handleStyleComplete} />;
       case 'outline':
         return <OutlineStep project={project} onBack={handleBack} onComplete={handleOutlineComplete} />;
       case 'login':

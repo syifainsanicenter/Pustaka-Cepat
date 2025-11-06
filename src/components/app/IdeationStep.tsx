@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, BookUp, Lightbulb, Loader2, Star, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -28,9 +27,6 @@ const formSchema = z.object({
   projectTitle: z.string().min(5, 'Judul proyek minimal 5 karakter.'),
   audience: z.string().min(5, 'Audiens minimal 5 karakter.'),
   goal: z.string().min(5, 'Tujuan minimal 5 karakter.'),
-  language: z.enum(['id', 'en', 'ar', 'su', 'jv', 'zh']),
-  writingStyle: z.string().min(3, 'Gaya penulisan harus diisi.'),
-  tone: z.string().min(3, 'Gaya bahasa harus diisi.'),
 });
 
 export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps) {
@@ -45,9 +41,6 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
       projectTitle: project.projectTitle || '',
       audience: project.audience || '',
       goal: project.goal || '',
-      language: project.language || 'id',
-      writingStyle: project.writingStyle || 'akademik ketat',
-      tone: project.tone || 'formal',
     },
   });
 
@@ -55,7 +48,13 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
     startTransition(async () => {
       setIdeas(undefined);
       setChosenIdea(undefined);
-      const result = await generateIdeasAction({ ...values, category: project.category! });
+      const result = await generateIdeasAction({ 
+        ...values, 
+        category: project.category!,
+        language: project.language!,
+        writingStyle: project.writingStyle!,
+        tone: project.tone!
+      });
       if (result.error) {
         toast({
           variant: 'destructive',
@@ -74,7 +73,7 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
 
   return (
     <div className="flex-1 grid md:grid-cols-12 gap-0 min-h-full">
-      <div className="md:col-span-4 lg:col-span-3 border-r bg-surface-muted p-6 flex flex-col">
+      <div className="md:col-span-4 lg:col-span-3 border-r bg-muted/20 p-6 flex flex-col">
         <div className="flex-1">
           <h2 className="text-2xl font-bold tracking-tight">Detail Proyek</h2>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -117,80 +116,6 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
                     <FormControl>
                       <Textarea placeholder="Contoh: Menjadi buku ajar semester 1" {...field} rows={2}/>
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="language"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bahasa</FormLabel>
-                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Pilih bahasa naskah" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="id">Indonesia</SelectItem>
-                          <SelectItem value="en">Inggris</SelectItem>
-                          <SelectItem value="ar">Arab</SelectItem>
-                          <SelectItem value="su">Sunda</SelectItem>
-                          <SelectItem value="jv">Jawa</SelectItem>
-                          <SelectItem value="zh">Mandarin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="writingStyle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gaya Penulisan</FormLabel>
-                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Pilih gaya penulisan" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="akademik ketat">Akademik Ketat</SelectItem>
-                          <SelectItem value="populer ilmiah">Populer Ilmiah</SelectItem>
-                          <SelectItem value="jurnalistik investigatif">Jurnalistik Investigatif</SelectItem>
-                          <SelectItem value="naratif historis">Naratif Historis</SelectItem>
-                          <SelectItem value="dakwah persuasif">Dakwah Persuasif</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="tone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gaya Bahasa</FormLabel>
-                     <Select onValuecha
-nge={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Pilih gaya bahasa" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="formal">Formal</SelectItem>
-                          <SelectItem value="semi-formal">Semi-Formal</SelectItem>
-                          <SelectItem value="informal">Informal</SelectItem>
-                          <SelectItem value="objektif">Objektif</SelectItem>
-                          <SelectItem value="inspiratif">Inspiratif</SelectItem>
-                        </SelectContent>
-                      </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -275,7 +200,7 @@ nge={field.onChange} defaultValue={field.value}>
             Kembali ke Kategori
           </Button>
           <Button size="lg" disabled={!chosenIdea} onClick={() => ideas && chosenIdea && onComplete(ideas, chosenIdea)}>
-            Lanjut ke Outline
+            Lanjut ke Gaya
           </Button>
         </div>
       </main>
