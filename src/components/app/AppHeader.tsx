@@ -1,10 +1,12 @@
-import { BookHeart, ChevronDown, LogOut, UserCircle, Shield } from 'lucide-react';
+import { BookHeart, ChevronDown, LogOut, UserCircle, Shield, Crown, Sparkles } from 'lucide-react';
 import type { AppStep } from './AppContainer';
 import { cn } from '@/lib/utils';
 import { useAuth, useUser } from '@/firebase';
 import { Button } from '../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Badge } from '../ui/badge';
+import type { UserProfile } from '@/firebase/auth/use-user';
 
 interface AppHeaderProps {
   step: AppStep;
@@ -21,6 +23,19 @@ const steps = [
   { id: 'chapter', name: 'Bab' },
   { id: 'export', name: 'Ekspor' },
 ];
+
+const getPlanBadge = (plan?: UserProfile['plan']) => {
+    switch (plan) {
+      case 'free':
+        return <Badge variant="secondary">Coba Gratis</Badge>;
+      case 'pro':
+        return <Badge variant="default" className="bg-blue-500 hover:bg-blue-600"><Sparkles className="w-3 h-3 mr-1" />Penulis Pro</Badge>;
+      case 'publisher':
+        return <Badge variant="destructive"><Crown className="w-3 h-3 mr-1"/>Penerbit Pro</Badge>;
+      default:
+        return null;
+    }
+  };
 
 function UserMenu({ onLogout, onGoToAdmin, isAdmin }: { onLogout: () => void; onGoToAdmin?: () => void; isAdmin?: boolean; }) {
   const { user } = useUser();
@@ -43,7 +58,12 @@ function UserMenu({ onLogout, onGoToAdmin, isAdmin }: { onLogout: () => void; on
             <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
             <AvatarFallback>{user.displayName?.charAt(0) || user.email?.charAt(0)}</AvatarFallback>
           </Avatar>
-          <span className="hidden md:inline">{user.displayName || user.email}</span>
+          <div className="hidden md:flex flex-col items-start">
+            <span className='text-sm font-medium leading-tight'>{user.displayName || user.email}</span>
+            <div className='-mt-0.5'>
+            {getPlanBadge(user.plan)}
+            </div>
+          </div>
           <ChevronDown className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>

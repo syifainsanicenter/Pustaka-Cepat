@@ -17,6 +17,7 @@ import { ExportStep } from './ExportStep';
 import { FirebaseClientProvider, useUser } from '@/firebase';
 import { AdminPage } from './AdminPage';
 import { AdminLogin } from '../auth/AdminLogin';
+import { Loader2 } from 'lucide-react';
 
 export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register' | 'admin' | 'admin-login';
 
@@ -38,6 +39,15 @@ function AppContent() {
   const [chapterContent, setChapterContent] = useState<ChapterContent>({});
 
   const handleStart = () => {
+    // For a logged-in user with a 'free' plan, check usage.
+    // In a real app, this usageCount would be stored in the database.
+    if (user && user.plan === 'free' && usageCount > 0) {
+      // Here you could show a "Upgrade your plan" modal.
+      // For now, we'll just block them after one use.
+       alert('Anda telah menggunakan jatah gratis Anda. Silakan upgrade paket Anda untuk melanjutkan.');
+       return;
+    }
+
     if (!user && usageCount > 0) {
       setStep('register');
     } else {
@@ -46,17 +56,17 @@ function AppContent() {
   };
 
   const handleLoginSuccess = () => {
-    setUsageCount(0); // Reset usage count on login
+    setUsageCount(0); // Reset local usage count on login
     setStep('category');
   };
   
   const handleAdminLoginSuccess = () => {
-    setUsageCount(0); // Reset usage count on login
+    setUsageCount(0);
     setStep('admin');
   };
 
   const handleRegisterSuccess = () => {
-    setUsageCount(0); // Reset usage count on register
+    setUsageCount(0);
     setStep('category');
   };
 
@@ -110,19 +120,27 @@ function AppContent() {
   };
 
   const renderStep = () => {
-    // If loading or user changes, you might want a loading screen
+    // If loading, show a loading screen
     if (loading) {
-      return <div className="flex-1 flex items-center justify-center">Loading...</div>;
+      return (
+        <div className="flex-1 flex flex-col items-center justify-center">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <p className="mt-4 text-muted-foreground">Memuat sesi Anda...</p>
+        </div>
+      );
     }
 
     // Special routing for admin
-    if (step !== 'landing' && step !== 'admin-login' && step !== 'register' && step !== 'login' && user?.email === ADMIN_EMAIL && step !== 'admin') {
-      // If admin is logged in but not on admin page, redirect to admin page
-      // but allow going back to the app from admin page.
-      if (step !== 'category' && step !== 'ideation' && step !== 'style' && step !== 'outline' && step !== 'chapter' && step !== 'export') {
-        // This prevents re-routing from app pages if admin explicitly navigated there
-        setStep('admin');
-      }
+    if (user?.email === ADMIN_EMAIL && step !== 'admin' && step !== 'landing') {
+        // If admin is logged in but not on admin page, check if they are trying to use the app
+        const appSteps: AppStep[] = ['category', 'ideation', 'style', 'outline', 'chapter', 'export'];
+        if (appSteps.includes(step)) {
+          // Admin is in the main app flow, allow it
+        } else {
+          // Otherwise, redirect to admin page
+          setStep('admin');
+          return null; // Render nothing while redirecting
+        }
     }
 
 
