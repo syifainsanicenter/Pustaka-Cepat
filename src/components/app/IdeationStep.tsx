@@ -1,7 +1,7 @@
 'use client';
 
 import type { GenerateBookIdeasOutput, GenerateBookIdeasInput } from '@/ai/flows/generate-book-ideas';
-import type { Project } from '@/lib/types';
+import type { Project, ProjectLanguage } from '@/lib/types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -16,10 +16,11 @@ import { ArrowLeft, BookUp, Lightbulb, Loader2, Star, Wand2 } from 'lucide-react
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Badge } from '../ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface IdeationStepProps {
   project: Project;
-  onComplete: (ideas: GenerateBookIdeasOutput['ideas'], chosenIdea: GenerateBookIdeasOutput['ideas'][0]) => void;
+  onComplete: (ideas: GenerateBookIdeasOutput['ideas'], chosenIdea: GenerateBookIdeasOutput['ideas'][0], language: ProjectLanguage) => void;
   onBack: () => void;
 }
 
@@ -27,6 +28,7 @@ const formSchema = z.object({
   projectTitle: z.string().min(5, 'Judul proyek minimal 5 karakter.'),
   audience: z.string().min(5, 'Audiens minimal 5 karakter.'),
   goal: z.string().min(5, 'Tujuan minimal 5 karakter.'),
+  language: z.enum(['id', 'en', 'ar', 'su', 'jv', 'zh']),
 });
 
 export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps) {
@@ -41,6 +43,7 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
       projectTitle: project.projectTitle || '',
       audience: project.audience || '',
       goal: project.goal || '',
+      language: project.language || 'id',
     },
   });
 
@@ -51,9 +54,8 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
       const result = await generateIdeasAction({ 
         ...values, 
         category: project.category!,
-        language: project.language!,
-        writingStyle: project.writingStyle!,
-        tone: project.tone!
+        writingStyle: project.writingStyle!, // Will be set in the next step, but flow needs it
+        tone: project.tone! // Will be set in the next step, but flow needs it
       });
       if (result.error) {
         toast({
@@ -118,6 +120,31 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
                     </FormControl>
                     <FormMessage />
                   </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="language"
+                render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Bahasa</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Pilih bahasa naskah" />
+                        </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                        <SelectItem value="id">Indonesia</SelectItem>
+                        <SelectItem value="en">Inggris</SelectItem>
+                        <SelectItem value="ar">Arab</SelectItem>
+                        <SelectItem value="su">Sunda</SelectItem>
+                        <SelectItem value="jv">Jawa</SelectItem>
+                        <SelectItem value="zh">Mandarin</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
+                </FormItem>
                 )}
               />
               <Button type="submit" disabled={isPending} className="w-full">
@@ -199,7 +226,7 @@ export function IdeationStep({ project, onComplete, onBack }: IdeationStepProps)
             <ArrowLeft className="mr-2 h-4 w-4" />
             Kembali ke Kategori
           </Button>
-          <Button size="lg" disabled={!chosenIdea} onClick={() => ideas && chosenIdea && onComplete(ideas, chosenIdea)}>
+          <Button size="lg" disabled={!chosenIdea} onClick={() => ideas && chosenIdea && onComplete(ideas, chosenIdea, form.getValues('language'))}>
             Lanjut ke Gaya
           </Button>
         </div>

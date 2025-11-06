@@ -254,7 +254,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
                                         </AccordionTrigger>
                                         <AccordionContent className='pt-4'>
                                             {generatedContent[selectedChapterIndex]?.[index] ? (
-                                                <div className='prose prose-sm max-w-none text-muted-foreground'>
+                                                <div className='prose prose-sm max-w-none text-muted-foreground font-body'>
                                                     {generatedContent[selectedChapterIndex][index].content.split('\n').map((p,i) => <p key={i}>{p}</p>)}
                                                 </div>
                                             ) : (
@@ -273,7 +273,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
                             </Accordion>
                         </ScrollArea>
                     </TabsContent>
-                    <TabsContent value="result" className="prose prose-sm max-w-none text-muted-foreground mt-4">
+                    <TabsContent value="result" className="font-headline prose prose-sm max-w-none text-muted-foreground mt-4">
                       {currentFullChapterContent ? (
                         <ScrollArea className="h-[calc(60vh)] pr-4">
                             {formatContentWithCitations(currentFullChapterContent.content, currentFullChapterContent.inlineCitations, currentFullChapterContent.references)}
@@ -285,7 +285,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
                     <TabsContent value="references">
                         {currentFullChapterContent ? (
                         <ScrollArea className="h-[60vh] pr-4">
-                          <div className="space-y-3 text-sm text-muted-foreground">
+                          <div className="space-y-3 text-sm text-muted-foreground font-body">
                             <h4 className="font-bold text-foreground">Daftar Pustaka</h4>
                             {currentFullChapterContent.references.map(ref => (
                               <p key={ref.refId}>{ref.apa}</p>

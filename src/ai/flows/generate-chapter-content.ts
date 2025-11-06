@@ -84,6 +84,7 @@ Panjang target: {{{length}}} kata (boleh ±10%)
 Wajib sitasi: {{{enforceCitations}}} (true/false)
 Kategori: {{{category}}}
 Tingkat kedalaman: {{{depthLevel}}} (dasar|menengah|mendalam)
+PERATURAN KONTEN: Ikuti kaidah paragraf, ejaan, dan tata bahasa sesuai KBBI. Gunakan gaya penulisan yang formal dan mendalam.
 OUTLINE BAB:
 Judul: {{{chapterPlan.title}}}
 Tujuan: {{{chapterPlan.objectives}}}

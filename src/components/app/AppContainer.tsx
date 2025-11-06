@@ -25,6 +25,7 @@ export function AppContainer() {
     language: 'id',
     writingStyle: 'akademik ketat',
     tone: 'formal',
+    chaptersCount: 10,
   });
   const [usageCount, setUsageCount] = useState(0);
 
@@ -37,15 +38,11 @@ export function AppContainer() {
   };
 
   const handleLoginSuccess = () => {
-    // For now, just reset usage and go to category.
-    // In a real app, this would involve user authentication.
     setUsageCount(0);
     setStep('category');
   };
 
   const handleRegisterSuccess = () => {
-    // For now, just reset usage and go to category.
-    // In a real app, this would involve user authentication.
     setUsageCount(0);
     setStep('category');
   };
@@ -56,12 +53,12 @@ export function AppContainer() {
     setStep('ideation');
   };
   
-  const handleIdeationComplete = (ideas: GenerateBookIdeasOutput['ideas'], chosenIdea: GenerateBookIdeasOutput['ideas'][0]) => {
-    setProject(p => ({ ...p, ideas, chosenIdea }));
+  const handleIdeationComplete = (ideas: GenerateBookIdeasOutput['ideas'], chosenIdea: GenerateBookIdeasOutput['ideas'][0], language: Project['language']) => {
+    setProject(p => ({ ...p, ideas, chosenIdea, language }));
     setStep('style');
   };
   
-  const handleStyleComplete = (style: { writingStyle: string; tone: string; language: 'id' | 'en' | 'ar' | 'su' | 'jv' | 'zh' }) => {
+  const handleStyleComplete = (style: { writingStyle: string; tone: string; chaptersCount: number; }) => {
     setProject(p => ({ ...p, ...style }));
     setStep('outline');
   };
