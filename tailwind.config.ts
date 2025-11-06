@@ -11,8 +11,9 @@ export default {
     extend: {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
-        code: ['monospace'],
+        headline: ['Source Serif 4', 'serif'],
+        code: ['JetBrains Mono', 'monospace'],
+        arabic: ['Amiri', 'serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -93,6 +94,9 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      boxShadow: {
+        DEFAULT: '0 8px 24px rgba(15, 23, 42, 0.08)',
+      }
     },
   },
   plugins: [require('tailwindcss-animate')],
