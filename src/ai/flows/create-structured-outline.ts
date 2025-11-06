@@ -58,7 +58,7 @@ const prompt = ai.definePrompt({
   name: 'createStructuredOutlinePrompt',
   input: {schema: CreateStructuredOutlineInputSchema.extend({ isIslamic: z.boolean() })},
   output: {schema: CreateStructuredOutlineOutputSchema},
-  prompt: `TUGAS: Susun outline buku terstruktur 8-12 bab untuk proyek di bawah ini.
+  prompt: `TUGAS: Susun outline buku terstruktur 8-12 bab untuk proyek di bawah ini. PASTIKAN SEMUA OUTPUT DALAM BAHASA YANG TELAH DITENTUKAN.
 PROJECT:
 
 Judul: {{{chosenIdeaTitle}}}
@@ -69,7 +69,7 @@ Gaya bahasa: {{{tone}}}
 Audiens: {{{audience}}}; Tujuan: {{{goal}}}
 Jumlah bab target: {{{chaptersCount}}}
 Instruksi tambahan: {{{extraInstructions}}}
-KELUARAN WAJIB: JSON sesuai skema. Untuk tiap bab: title, 3-6 subheadings, 2-4 objectives, glossaryTerms (istilah kunci).
+KELUARAN WAJIB: JSON sesuai skema. Untuk tiap bab: title, 3-6 subheadings, 2-4 objectives, glossaryTerms (istilah kunci). Semua teks harus dalam bahasa: {{{language}}}.
 {{#if isIslamic}}Jika category="islamic", tambahkan suggestedDalilTopics (array tema ayat/hadis per bab).{{/if}}
 CATATAN: Outline harus progresif, tidak tumpang tindih, dan siap dipakai untuk generate bab.`,
 });

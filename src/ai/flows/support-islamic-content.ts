@@ -13,6 +13,7 @@ import {z} from 'genkit';
 const InsertIslamicReferenceInputSchema = z.object({
   topic: z.string().describe('The topic for which to find a relevant Islamic reference (Quran or Hadith).'),
   referencesJson: z.string().describe('JSON array of available religious references (Quran/Hadith) with arabText and rujukan.'),
+  language: z.string().describe('The language for the translation and notes.'),
 });
 export type InsertIslamicReferenceInput = z.infer<typeof InsertIslamicReferenceInputSchema>;
 
@@ -34,8 +35,9 @@ const prompt = ai.definePrompt({
   name: 'insertIslamicReferencePrompt',
   input: {schema: InsertIslamicReferenceInputSchema},
   output: {schema: InsertIslamicReferenceOutputSchema},
-  prompt: `You are an expert in Islamic texts. Given a topic and a list of available Quranic verses and Hadith, you will select the most relevant reference and provide its Arabic text, a short translation, and its reference.
+  prompt: `You are an expert in Islamic texts. Given a topic and a list of available Quranic verses and Hadith, you will select the most relevant reference and provide its Arabic text, a short translation, and its reference. The translation and notes must be in the specified language.
 
+Language: {{{language}}}
 Topic: {{{topic}}}
 
 Available References:
@@ -49,9 +51,10 @@ Available References:
 
 Instructions:
 1.  Select the reference that is most relevant to the topic.
-2.  Provide the arabText (if available), translation, and reference.
-3.  If no suitable reference is found, explain why in the todoRef field.
+2.  Provide the arabText (if available), a short translation (in {{{language}}}), and the reference.
+3.  If no suitable reference is found, explain why in the todoRef field (in {{{language}}}).
 4. If a refId was used, include it in the output.
+5. Notes should also be in {{{language}}}.
 
 Output JSON: {
   "arabText": "The Arabic text of the Quranic verse or Hadith.",
@@ -74,44 +77,19 @@ const insertIslamicReferenceFlow = ai.defineFlow(
   },
   async input => {
     try {
-      // Parse the references JSON string into a JavaScript object
-      const references = JSON.parse(input.referencesJson);
-
-      // Find the first Quran or Hadith that matches the topic
-      const foundReference = references.find(ref => {
-        // Simple topic matching (case-insensitive)
-        const topicLower = input.topic.toLowerCase();
-        const translationLower = ref.meta?.translation?.toLowerCase() || '';
-
-        return (ref.type === 'quran' || ref.type === 'hadith') && (translationLower.includes(topicLower));
-      });
-
-      if (foundReference) {
-        return {
-          arabText: foundReference.arabText || '',
-          translation: foundReference.meta?.translation || '',
-          reference: foundReference.rujukan || '',
-          refId: foundReference.refId || '',
-          notes: 'Reference found and included based on topic matching.',
-        };
-      } else {
-        return {
-          arabText: '',
-          translation: '',
-          reference: '',
-          notes: 'No suitable reference found.',
-          todoRef: 'Could not find a relevant Quranic verse or Hadith for the given topic in the provided references. Please provide more references or refine the topic.',
-        };
-      }
+      // This flow is now fully handled by the LLM prompt.
+      const {output} = await prompt(input);
+      return output!;
     } catch (error) {
-      console.error('Error processing references:', error);
+      console.error('Error processing references with AI:', error);
       return {
         arabText: '',
         translation: '',
         reference: '',
-        notes: 'Error processing references.',
-        todoRef: 'An error occurred while processing the provided references. Please check the format and try again.',
+        notes: 'Error processing references with AI.',
+        todoRef: 'An error occurred while processing the provided references with the AI model. Please check the format and try again.',
       };
     }
   }
 );
+

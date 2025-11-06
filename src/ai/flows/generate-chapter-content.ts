@@ -76,7 +76,7 @@ const prompt = ai.definePrompt({
   output: {
     schema: GenerateChapterContentOutputSchema,
   },
-  prompt: `TUGAS: Tulis 1 bab lengkap berdasarkan outline bab berikut.
+  prompt: `TUGAS: Tulis 1 bab lengkap berdasarkan outline bab berikut. PASTIKAN SEMUA OUTPUT TEKS DALAM BAHASA YANG TELAH DITENTUKAN.
 KONFIG:
 Bahasa: {{{language}}}
 Gaya penulisan: {{{writingStyle}}}; Gaya bahasa: {{{tone}}}
@@ -84,7 +84,7 @@ Panjang target: {{{length}}} kata (boleh ±10%)
 Wajib sitasi: {{{enforceCitations}}} (true/false)
 Kategori: {{{category}}}
 Tingkat kedalaman: {{{depthLevel}}} (dasar|menengah|mendalam)
-PERATURAN KONTEN: Ikuti kaidah paragraf, ejaan, dan tata bahasa sesuai KBBI. Gunakan gaya penulisan yang formal dan mendalam.
+PERATURAN KONTEN: Ikuti kaidah paragraf, ejaan, dan tata bahasa sesuai KBBI (jika bahasa Indonesia). Gunakan gaya penulisan yang formal dan mendalam. Semua konten harus ditulis dalam bahasa: {{{language}}}.
 OUTLINE BAB:
 Judul: {{{chapterPlan.title}}}
 Tujuan: {{{chapterPlan.objectives}}}

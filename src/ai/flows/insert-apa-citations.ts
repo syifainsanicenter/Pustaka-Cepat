@@ -14,6 +14,7 @@ import {z} from 'genkit';
 const InsertApaCitationsInputSchema = z.object({
   text: z.string().describe('The text to insert citations into.'),
   referencesJson: z.string().describe('A JSON string of references to use for citation.  Should be an array of {refId, type, apa, meta{...}} objects.'),
+  language: z.string().describe('The language of the text.'),
 });
 export type InsertApaCitationsInput = z.infer<typeof InsertApaCitationsInputSchema>;
 
@@ -41,7 +42,9 @@ const prompt = ai.definePrompt({
   name: 'insertApaCitationsPrompt',
   input: {schema: InsertApaCitationsInputSchema},
   output: {schema: InsertApaCitationsOutputSchema},
-  prompt: `You are an expert academic writing assistant. Your task is to insert APA-style in-line citations into the given text, using the provided references.
+  prompt: `You are an expert academic writing assistant. Your task is to insert APA-style in-line citations into the given text, using the provided references. The output must be in the specified language.
+
+Language: {{{language}}}
 
 Here's the text:
 {{{text}}}
@@ -53,14 +56,14 @@ Instructions:
 1.  Analyze the text and identify where citations are needed to support the claims and ideas presented.
 2.  For each citation, find the most relevant reference from the provided referencesJson.
 3.  Insert the citation in APA format (Author, Year) at the end of the sentence or clause where it is relevant.
-4.  If a suitable reference is not found, add a suggestion to newRefSuggestions.
+4.  If a suitable reference is not found, add a suggestion to newRefSuggestions (in the specified language).
 5.  Ensure that the spanStart and spanEnd values in the inlineCitations array correctly indicate the position of the citation in the output text.
-6.  If there's anything else to note add to the todoRef.
+6.  If there's anything else to note add to the todoRef (in the specified language).
 7.  Estimate word count of content.
 
 Output:
 Return a JSON object with the following fields:
-- content: The updated text with inline citations.
+- content: The updated text with inline citations (in the specified language).
 - inlineCitations: An array of objects, each with spanStart, spanEnd, and refId.
 - newRefSuggestions: (Optional) An array of strings with suggestions for new references.
 - todoRef: (Optional) A string indicating that a reference is missing or needs to be added.
@@ -71,3 +74,17 @@ Example:
 Input:
 text: "This is a sentence that needs a citation. Another sentence here."
 referencesJson: '[{\
+`
+});
+
+const insertApaCitationsFlow = ai.defineFlow(
+  {
+    name: 'insertApaCitationsFlow',
+    inputSchema: InsertApaCitationsInputSchema,
+    outputSchema: InsertApaCitationsOutputSchema,
+  },
+  async input => {
+    const {output} = await prompt(input);
+    return output!;
+  }
+);
