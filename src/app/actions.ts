@@ -2,6 +2,7 @@
 
 import { generateBookIdeas, type GenerateBookIdeasInput } from '@/ai/flows/generate-book-ideas';
 import { createStructuredOutline, type CreateStructuredOutlineInput } from '@/ai/flows/create-structured-outline';
+import { generateChapterContent, type GenerateChapterContentInput } from '@/ai/flows/generate-chapter-content';
 import { z } from 'zod';
 
 const ActionError = z.object({
@@ -33,3 +34,16 @@ export async function createOutlineAction(input: CreateStructuredOutlineInput) {
     return { error: e.message || 'Terjadi kesalahan pada server.' };
   }
 }
+
+export async function generateChapterAction(input: GenerateChapterContentInput) {
+    try {
+      const output = await generateChapterContent(input);
+      if (!output || !output.content) {
+        return { error: 'Gagal menulis bab. Silakan coba lagi.' };
+      }
+      return output;
+    } catch (e: any) {
+      console.error(e);
+      return { error: e.message || 'Terjadi kesalahan pada server.' };
+    }
+  }

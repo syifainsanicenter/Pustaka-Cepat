@@ -12,6 +12,7 @@ import type { CreateStructuredOutlineOutput } from '@/ai/flows/create-structured
 import { Login } from '@/components/auth/Login';
 import { Register } from '@/components/auth/Register';
 import { StyleStep } from './StyleStep';
+import { ChapterStep } from './ChapterStep';
 
 export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register';
 
@@ -70,11 +71,16 @@ export function AppContainer() {
     setStep('chapter');
   };
 
+  const handleChapterComplete = () => {
+    setStep('export');
+  }
+
   const handleBack = () => {
     if (step === 'ideation') setStep('category');
     if (step === 'category') setStep('landing');
     if (step === 'style') setStep('ideation');
     if (step === 'outline') setStep('style');
+    if (step === 'chapter') setStep('outline');
     if (step === 'login' || step === 'register') setStep('landing');
   }
 
@@ -90,6 +96,8 @@ export function AppContainer() {
         return <StyleStep project={project} onBack={handleBack} onComplete={handleStyleComplete} />;
       case 'outline':
         return <OutlineStep project={project} onBack={handleBack} onComplete={handleOutlineComplete} />;
+      case 'chapter':
+        return <ChapterStep project={project} onBack={handleBack} onComplete={handleChapterComplete} />;
       case 'login':
         return <Login onBack={handleBack} onSwitchToRegister={() => setStep('register')} onLoginSuccess={handleLoginSuccess} />;
       case 'register':
