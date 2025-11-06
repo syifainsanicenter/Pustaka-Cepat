@@ -49,12 +49,14 @@ export type CreateStructuredOutlineOutput = z.infer<
 export async function createStructuredOutline(
   input: CreateStructuredOutlineInput
 ): Promise<CreateStructuredOutlineOutput> {
-  return createStructuredOutlineFlow(input);
+  const isIslamic = input.category === 'islamic';
+  const customInput = {...input, isIslamic};
+  return createStructuredOutlineFlow(customInput);
 }
 
 const prompt = ai.definePrompt({
   name: 'createStructuredOutlinePrompt',
-  input: {schema: CreateStructuredOutlineInputSchema},
+  input: {schema: CreateStructuredOutlineInputSchema.extend({ isIslamic: z.boolean() })},
   output: {schema: CreateStructuredOutlineOutputSchema},
   prompt: `TUGAS: Susun outline buku terstruktur 8-12 bab untuk proyek di bawah ini.
 PROJECT:
@@ -68,14 +70,14 @@ Audiens: {{{audience}}}; Tujuan: {{{goal}}}
 Jumlah bab target: {{{chaptersCount}}}
 Instruksi tambahan: {{{extraInstructions}}}
 KELUARAN WAJIB: JSON sesuai skema. Untuk tiap bab: title, 3-6 subheadings, 2-4 objectives, glossaryTerms (istilah kunci).
-{{#if (eq category "islamic")}}Jika category="islamic", tambahkan suggestedDalilTopics (array tema ayat/hadis per bab).{{/if}}
+{{#if isIslamic}}Jika category="islamic", tambahkan suggestedDalilTopics (array tema ayat/hadis per bab).{{/if}}
 CATATAN: Outline harus progresif, tidak tumpang tindih, dan siap dipakai untuk generate bab.`,
 });
 
 const createStructuredOutlineFlow = ai.defineFlow(
   {
     name: 'createStructuredOutlineFlow',
-    inputSchema: CreateStructuredOutlineInputSchema,
+    inputSchema: CreateStructuredOutlineInputSchema.extend({ isIslamic: z.boolean() }),
     outputSchema: CreateStructuredOutlineOutputSchema,
   },
   async input => {
