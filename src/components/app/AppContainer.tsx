@@ -52,12 +52,7 @@ function AppContent() {
   
   const handleAdminLoginSuccess = () => {
     setUsageCount(0); // Reset usage count on login
-    if (user?.email === ADMIN_EMAIL) {
-      setStep('admin');
-    } else {
-      // If a non-admin user somehow used the admin login, send them to the regular app
-      setStep('category');
-    }
+    setStep('admin');
   };
 
   const handleRegisterSuccess = () => {
@@ -105,7 +100,7 @@ function AppContent() {
     if (step === 'chapter') setStep('outline');
     if (step === 'export') setStep('chapter');
     if (step === 'login' || step === 'register' || step === 'admin-login') setStep('landing');
-    if (step === 'admin' && user?.email !== ADMIN_EMAIL) setStep('category');
+    if (step === 'admin') setStep('category'); // If admin goes back, go to app
   }
   
   const handleGoToAdmin = () => {
@@ -115,6 +110,22 @@ function AppContent() {
   };
 
   const renderStep = () => {
+    // If loading or user changes, you might want a loading screen
+    if (loading) {
+      return <div className="flex-1 flex items-center justify-center">Loading...</div>;
+    }
+
+    // Special routing for admin
+    if (step !== 'landing' && step !== 'admin-login' && step !== 'register' && step !== 'login' && user?.email === ADMIN_EMAIL && step !== 'admin') {
+      // If admin is logged in but not on admin page, redirect to admin page
+      // but allow going back to the app from admin page.
+      if (step !== 'category' && step !== 'ideation' && step !== 'style' && step !== 'outline' && step !== 'chapter' && step !== 'export') {
+        // This prevents re-routing from app pages if admin explicitly navigated there
+        setStep('admin');
+      }
+    }
+
+
     switch (step) {
       case 'landing':
         return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} onAdminLogin={() => setStep('admin-login')} />;

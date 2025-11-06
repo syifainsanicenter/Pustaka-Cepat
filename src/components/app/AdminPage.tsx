@@ -21,6 +21,8 @@ interface AdminPageProps {
   onBack: () => void;
 }
 
+const ADMIN_EMAIL = 'syifainsanicenter@gmail.com';
+
 export function AdminPage({ onBack }: AdminPageProps) {
   const firestore = useFirestore();
   const { user: adminUser } = useUser();
@@ -32,7 +34,7 @@ export function AdminPage({ onBack }: AdminPageProps) {
 
   const { data: users, loading, error } = useCollection(usersQuery);
 
-  if (adminUser?.email !== 'syifainsanicenter@gmail.com') {
+  if (adminUser?.email !== ADMIN_EMAIL) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center container mx-auto px-4 md:px-6 py-12">
         <Card className="max-w-md text-center">
@@ -40,7 +42,7 @@ export function AdminPage({ onBack }: AdminPageProps) {
                 <CardTitle>Akses Ditolak</CardTitle>
             </CardHeader>
             <CardContent>
-                <p>Anda tidak memiliki izin untuk mengakses halaman ini.</p>
+                <p>Hanya admin yang dapat mengakses halaman ini.</p>
                 <Button onClick={onBack} className="mt-4">Kembali ke Aplikasi</Button>
             </CardContent>
         </Card>
@@ -53,7 +55,7 @@ export function AdminPage({ onBack }: AdminPageProps) {
       case 'free':
         return <Badge variant="secondary">Coba Gratis</Badge>;
       case 'pro':
-        return <Badge variant="default">Penulis Pro</Badge>;
+        return <Badge variant="default" className="bg-blue-500 hover:bg-blue-600">Penulis Pro</Badge>;
       case 'publisher':
         return <Badge variant="destructive">Penerbit Pro</Badge>;
       default:
