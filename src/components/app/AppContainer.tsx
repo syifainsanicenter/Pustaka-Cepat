@@ -12,7 +12,8 @@ import type { CreateStructuredOutlineOutput } from '@/ai/flows/create-structured
 import { Login } from '@/components/auth/Login';
 import { Register } from '@/components/auth/Register';
 import { StyleStep } from './StyleStep';
-import { ChapterStep } from './ChapterStep';
+import { ChapterStep, type ChapterContent } from './ChapterStep';
+import { ExportStep } from './ExportStep';
 
 export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register';
 
@@ -28,6 +29,7 @@ export function AppContainer() {
     chaptersCount: 10,
   });
   const [usageCount, setUsageCount] = useState(0);
+  const [chapterContent, setChapterContent] = useState<ChapterContent>({});
 
   const handleStart = () => {
     if (usageCount > 0) {
@@ -68,7 +70,8 @@ export function AppContainer() {
     setStep('chapter');
   };
 
-  const handleChapterComplete = () => {
+  const handleChapterComplete = (content: ChapterContent) => {
+    setChapterContent(content);
     setStep('export');
   }
 
@@ -78,6 +81,7 @@ export function AppContainer() {
     if (step === 'style') setStep('ideation');
     if (step === 'outline') setStep('style');
     if (step === 'chapter') setStep('outline');
+    if (step === 'export') setStep('chapter');
     if (step === 'login' || step === 'register') setStep('landing');
   }
 
@@ -94,7 +98,9 @@ export function AppContainer() {
       case 'outline':
         return <OutlineStep project={project} onBack={handleBack} onComplete={handleOutlineComplete} />;
       case 'chapter':
-        return <ChapterStep project={project} onBack={handleBack} onComplete={handleChapterComplete} />;
+        return <ChapterStep project={project} onBack={handleBack} onComplete={handleChapterComplete} initialContent={chapterContent}/>;
+      case 'export':
+        return <ExportStep project={project} chapterContent={chapterContent} onBack={handleBack} />;
       case 'login':
         return <Login onBack={handleBack} onSwitchToRegister={() => setStep('register')} onLoginSuccess={handleLoginSuccess} />;
       case 'register':

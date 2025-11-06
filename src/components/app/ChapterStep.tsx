@@ -16,10 +16,13 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '..
 import { Slider } from '../ui/slider';
 import { Label } from '../ui/label';
 
+export type ChapterContent = Record<number, Record<number, SubheadingContent>>;
+
 interface ChapterStepProps {
   project: Project;
   onBack: () => void;
-  onComplete: () => void;
+  onComplete: (content: ChapterContent) => void;
+  initialContent: ChapterContent;
 }
 
 type ChapterResult = GenerateChapterContentOutput & {
@@ -32,10 +35,10 @@ type SubheadingContent = {
   inlineCitations: ChapterResult['inlineCitations'];
 };
 
-export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
+export function ChapterStep({ project, onBack, onComplete, initialContent }: ChapterStepProps) {
   const [isGenerating, startGeneration] = useTransition();
   const [selectedChapterIndex, setSelectedChapterIndex] = useState<number>(0);
-  const [generatedContent, setGeneratedContent] = useState<Record<number, Record<number, SubheadingContent>>>({});
+  const [generatedContent, setGeneratedContent] = useState<ChapterContent>(initialContent);
   const [wordCount, setWordCount] = useState(1000);
   const { toast } = useToast();
 
@@ -56,7 +59,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
         language: project.language!,
         writingStyle: project.writingStyle!,
         tone: project.tone!,
-        length: wordCount, // Use selected word count
+        length: Math.round(wordCount / selectedChapter.subheadings.length), // Divide word count by subheadings
         enforceCitations: true,
         category: project.category!,
         depthLevel: 'menengah',
@@ -136,6 +139,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
         wordCount: totalWordCount,
         inlineCitations: allCitations,
         references: allReferences,
+        newRefSuggestions: [],
     };
   }
   
@@ -175,7 +179,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
           if (p.startsWith('### ')) {
             return <h3 key={`h-${i}`} className="text-xl font-semibold mt-6 mb-3 text-foreground">{p.replace('### ', '')}</h3>
           }
-          return <p key={`p-${i}`} className="mb-4 leading-relaxed">{p}</p>;
+          return <p key={`p-${i}`} className="mb-4 leading-relaxed font-body">{p}</p>;
         });
         return [...acc, ...lines];
       }
@@ -185,7 +189,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
     return combined;
   };
 
-  const isAllSubheadingsGenerated = selectedChapter && generatedContent[selectedChapterIndex] && Object.keys(generatedContent[selectedChapterIndex]).length === selectedChapter.subheadings.length;
+  const isAnySubheadingGenerated = selectedChapter && generatedContent[selectedChapterIndex] && Object.keys(generatedContent[selectedChapterIndex]).length > 0;
 
   return (
     <div className="flex-1 grid md:grid-cols-12 gap-0 min-h-full">
@@ -214,7 +218,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
           <>
             <Card className="flex-1 flex flex-col">
               <CardHeader>
-                <CardTitle className="text-2xl">Bab {selectedChapter.index}: {selectedChapter.title}</CardTitle>
+                <CardTitle className="text-2xl font-headline">Bab {selectedChapter.index}: {selectedChapter.title}</CardTitle>
                 <CardDescription>
                   Tulis konten per sub-bab. AI akan menggabungkannya menjadi satu bab utuh.
                 </CardDescription>
@@ -228,7 +232,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
                     </TabsList>
                     <TabsContent value="generator" className="flex-1 mt-4">
                         <div className="mb-6 space-y-3 p-4 border rounded-lg">
-                            <Label htmlFor="word-count" className='font-bold'>Panjang Kata per Sub-bab: {wordCount} kata</Label>
+                            <Label htmlFor="word-count" className='font-bold'>Panjang Kata per Sub-bab: {Math.round(wordCount / (selectedChapter.subheadings.length || 1))} kata</Label>
                             <Slider
                                 id="word-count"
                                 min={500}
@@ -238,8 +242,9 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
                                 onValueChange={(value) => setWordCount(value[0])}
                                 disabled={isGenerating}
                             />
+                             <p className="text-xs text-muted-foreground">Total target untuk bab ini sekitar {wordCount} kata.</p>
                         </div>
-                        <ScrollArea className='h-[calc(50vh-80px)] pr-4'>
+                        <ScrollArea className='h-[calc(50vh-120px)] pr-4'>
                             <Accordion type="multiple" className="w-full">
                                 {selectedChapter.subheadings.map((subheading, index) => (
                                     <AccordionItem value={`item-${index}`} key={index}>
@@ -254,7 +259,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
                                         </AccordionTrigger>
                                         <AccordionContent className='pt-4'>
                                             {generatedContent[selectedChapterIndex]?.[index] ? (
-                                                <div className='prose prose-sm max-w-none text-muted-foreground font-body'>
+                                                <div className='prose prose-sm max-w-none text-muted-foreground font-body text-justify'>
                                                     {generatedContent[selectedChapterIndex][index].content.split('\n').map((p,i) => <p key={i}>{p}</p>)}
                                                 </div>
                                             ) : (
@@ -273,7 +278,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
                             </Accordion>
                         </ScrollArea>
                     </TabsContent>
-                    <TabsContent value="result" className="font-headline prose prose-sm max-w-none text-muted-foreground mt-4">
+                    <TabsContent value="result" className="font-headline text-muted-foreground mt-4 text-justify">
                       {currentFullChapterContent ? (
                         <ScrollArea className="h-[calc(60vh)] pr-4">
                             {formatContentWithCitations(currentFullChapterContent.content, currentFullChapterContent.inlineCitations, currentFullChapterContent.references)}
@@ -305,7 +310,7 @@ export function ChapterStep({ project, onBack, onComplete }: ChapterStepProps) {
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Kembali ke Outline
               </Button>
-              <Button size="lg" onClick={onComplete} disabled={!isAllSubheadingsGenerated}>
+              <Button size="lg" onClick={() => onComplete(generatedContent)} disabled={!isAnySubheadingGenerated || isGenerating}>
                 Lanjut ke Ekspor
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
