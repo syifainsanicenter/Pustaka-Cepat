@@ -68,7 +68,7 @@ Audiens: {{{audience}}}; Tujuan: {{{goal}}}
 Jumlah bab target: {{{chaptersCount}}}
 Instruksi tambahan: {{{extraInstructions}}}
 KELUARAN WAJIB: JSON sesuai skema. Untuk tiap bab: title, 3-6 subheadings, 2-4 objectives, glossaryTerms (istilah kunci).
-{{#eq category "islamic"}}Jika category=“islamic”, tambahkan suggestedDalilTopics (array tema ayat/hadis per bab).{{/eq}}
+{{#if (eq category "islamic")}}Jika category="islamic", tambahkan suggestedDalilTopics (array tema ayat/hadis per bab).{{/if}}
 CATATAN: Outline harus progresif, tidak tumpang tindih, dan siap dipakai untuk generate bab.`,
 });
 
