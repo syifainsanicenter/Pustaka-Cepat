@@ -149,9 +149,9 @@ export function ChapterStep({ project, onBack, onComplete, initialContent }: Cha
     if (!inlineCitations || inlineCitations.length === 0) {
       return content.split('\n').map((p, i) => {
         if (p.startsWith('### ')) {
-            return <h3 key={i} className="text-xl font-semibold mt-6 mb-3 text-foreground">{p.replace('### ', '')}</h3>
+            return <h3 key={`h-${i}`} className="text-xl font-semibold mt-6 mb-3 text-foreground">{p.replace('### ', '')}</h3>
         }
-        return <p key={i} className="mb-4 leading-relaxed">{p}</p>
+        return <p key={`p-${i}`} className="mb-4 leading-relaxed">{p}</p>
       });
     }
 
@@ -173,13 +173,13 @@ export function ChapterStep({ project, onBack, onComplete, initialContent }: Cha
     });
     parts.push(content.substring(lastIndex));
     
-    const combined = parts.reduce<React.ReactNode[]>((acc, part) => {
+    const combined = parts.reduce<React.ReactNode[]>((acc, part, partIndex) => {
       if (typeof part === 'string') {
         const lines = part.split('\n').filter(p => p.trim() !== '').map((p, i) => {
           if (p.startsWith('### ')) {
-            return <h3 key={`h-${i}`} className="text-xl font-semibold mt-6 mb-3 text-foreground">{p.replace('### ', '')}</h3>
+            return <h3 key={`h-${partIndex}-${i}`} className="text-xl font-semibold mt-6 mb-3 text-foreground">{p.replace('### ', '')}</h3>
           }
-          return <p key={`p-${i}`} className="mb-4 leading-relaxed font-body">{p}</p>;
+          return <p key={`p-${partIndex}-${i}`} className="mb-4 leading-relaxed font-body">{p}</p>;
         });
         return [...acc, ...lines];
       }
@@ -325,3 +325,5 @@ export function ChapterStep({ project, onBack, onComplete, initialContent }: Cha
     </div>
   );
 }
+
+    
