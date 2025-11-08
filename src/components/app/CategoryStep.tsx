@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { ProjectCategory } from '@/lib/types';
-import { ArrowLeft, BookCopy, BookMarked, GraduationCap, MoonStar, Users } from 'lucide-react';
+import { ArrowLeft, BookCopy, BookMarked, Code, Cpu, GraduationCap, Leaf, MessageSquare, MoonStar, Paintbrush, Presentation, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface CategoryStepProps {
@@ -18,6 +18,12 @@ const categories = [
   { id: 'monograf', title: 'Monograf', description: 'Kajian mendalam tentang satu topik spesifik.', icon: BookMarked },
   { id: 'populer', title: 'Populer', description: 'Tulisan yang mudah diakses untuk audiens umum.', icon: Users },
   { id: 'islamic', title: 'Islam', description: 'Buku dengan referensi Al-Qur\'an dan Hadis.', icon: MoonStar, featured: true },
+  { id: 'ceramah', title: 'Ceramah/Khutbah', description: 'Kumpulan naskah untuk penceramah dan da\'i.', icon: Presentation },
+  { id: 'anak', title: 'Buku Anak', description: 'Cerita, komik, atau buku aktivitas mewarnai.', icon: Paintbrush },
+  { id: 'panduan_coding', title: 'Panduan Coding', description: 'Buku panduan praktis untuk pemrograman.', icon: Code },
+  { id: 'panduan_ai', title: 'Panduan AI', description: 'Panduan tentang kecerdasan buatan.', icon: Cpu },
+  { id: 'panduan_pertanian', title: 'Panduan Pertanian', description: 'Teknik dan tips untuk bertani modern.', icon: Leaf },
+  { id: 'panduan_thibbun', title: 'Thibbun Nabawi', description: 'Panduan pengobatan cara Nabi.', icon: MessageSquare },
 ] as const;
 
 export function CategoryStep({ onSelect, onBack }: CategoryStepProps) {
