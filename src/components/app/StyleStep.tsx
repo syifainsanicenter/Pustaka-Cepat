@@ -68,14 +68,19 @@ export function StyleStep({ project, onComplete, onBack }: StyleStepProps) {
                                 </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="naratif">Naratif</SelectItem>
+                                    <SelectItem value="akademik ketat">Akademik Ketat</SelectItem>
+                                    <SelectItem value="populer ilmiah">Populer Ilmiah</SelectItem>
+                                    <SelectItem value="naratif">Naratif / Cerita</SelectItem>
                                     <SelectItem value="deskriptif">Deskriptif</SelectItem>
                                     <SelectItem value="persuasif">Persuasif</SelectItem>
                                     <SelectItem value="argumentatif">Argumentatif</SelectItem>
                                     <SelectItem value="inspiratif">Inspiratif</SelectItem>
                                     <SelectItem value="jurnalistik investigatif">Jurnalistik Investigatif</SelectItem>
-                                    <SelectItem value="populer ilmiah">Populer Ilmiah</SelectItem>
-                                    <SelectItem value="akademik ketat">Akademik Ketat</SelectItem>
+                                    <SelectItem value="tutorial langkah-demi-langkah">Tutorial Langkah-demi-Langkah</SelectItem>
+                                    <SelectItem value="kumpulan contoh ceramah">Kumpulan Contoh Ceramah</SelectItem>
+                                    <SelectItem value="kumpulan tips praktis">Kumpulan Tips Praktis</SelectItem>
+                                    <SelectItem value="kumpulan cerita bergambar">Kumpulan Cerita Bergambar</SelectItem>
+                                    <SelectItem value="biografi">Biografi</SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormMessage />
@@ -98,11 +103,14 @@ export function StyleStep({ project, onComplete, onBack }: StyleStepProps) {
                                     <SelectItem value="formal">Formal</SelectItem>
                                     <SelectItem value="semi-formal">Semi-Formal</SelectItem>
                                     <SelectItem value="informal">Informal</SelectItem>
-                                    <SelectItem value="hangat">Hangat</SelectItem>
-                                    <SelectItem value="kocak">Kocak</SelectItem>
-                                    <SelectItem value="gaul">Gaul</SelectItem>
-                                    <SelectItem value="objektif">Objektif</SelectItem>
-                                    <SelectItem value="inspiratif">Inspiratif</SelectItem>
+                                    <SelectItem value="untuk anak-anak">Untuk Anak-anak</SelectItem>
+                                    <SelectItem value="untuk remaja">Untuk Remaja</SelectItem>
+                                    <SelectItem value="untuk dewasa">Untuk Dewasa</SelectItem>
+                                    <SelectItem value="hangat dan ramah">Hangat & Ramah</SelectItem>
+                                    <SelectItem value="humoris">Humoris</SelectItem>
+                                    <SelectItem value="puitis">Puitis</SelectItem>
+                                    <SelectItem value="objektif dan teknis">Objektif & Teknis</SelectItem>
+                                    <SelectItem value="inspiratif dan memotivasi">Inspiratif & Memotivasi</SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormMessage />
