@@ -6,7 +6,7 @@ import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ArrowLeft, BookText, ChevronRight, FileText, Loader2, Sparkles, Wand2 } from 'lucide-react';
+import { ArrowLeft, BookText, ChevronRight, FileText, Image as ImageIcon, Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateChapterAction } from '@/app/actions';
 import { Badge } from '../ui/badge';
@@ -145,14 +145,29 @@ export function ChapterStep({ project, onBack, onComplete, initialContent }: Cha
   
   const currentFullChapterContent = getFullChapterContent();
 
+  const renderFormattedLine = (line: string, key: string | number) => {
+    if (line.startsWith('[Deskripsi gambar:')) {
+      return (
+        <div key={key} className="my-4 p-3 border-l-4 border-accent bg-accent/10 rounded-r-lg">
+          <div className="flex items-start gap-3">
+            <ImageIcon className="w-5 h-5 text-accent mt-1 shrink-0" />
+            <p className="text-sm text-accent-foreground/80 italic">{line.replace('[Deskripsi gambar: ', '').slice(0, -1)}</p>
+          </div>
+        </div>
+      );
+    }
+    if (line.startsWith('### ')) {
+      return <h3 key={`h-${key}`} className="text-xl font-semibold mt-6 mb-3 text-foreground">{line.replace('### ', '')}</h3>;
+    }
+    if (line.trim() === '') {
+      return null;
+    }
+    return <p key={`p-${key}`} className="mb-4 leading-relaxed font-body">{line}</p>;
+  };
+
   const formatContentWithCitations = (content: string, inlineCitations: ChapterResult['inlineCitations'], references: Reference[]): React.ReactNode => {
     if (!inlineCitations || inlineCitations.length === 0) {
-      return content.split('\n').map((p, i) => {
-        if (p.startsWith('### ')) {
-            return <h3 key={`h-${i}`} className="text-xl font-semibold mt-6 mb-3 text-foreground">{p.replace('### ', '')}</h3>
-        }
-        return <p key={`p-${i}`} className="mb-4 leading-relaxed">{p}</p>
-      });
+      return content.split('\n').map((p, i) => renderFormattedLine(p, i));
     }
 
     let lastIndex = 0;
@@ -175,12 +190,7 @@ export function ChapterStep({ project, onBack, onComplete, initialContent }: Cha
     
     const combined = parts.reduce<React.ReactNode[]>((acc, part, partIndex) => {
       if (typeof part === 'string') {
-        const lines = part.split('\n').filter(p => p.trim() !== '').map((p, i) => {
-          if (p.startsWith('### ')) {
-            return <h3 key={`h-${partIndex}-${i}`} className="text-xl font-semibold mt-6 mb-3 text-foreground">{p.replace('### ', '')}</h3>
-          }
-          return <p key={`p-${partIndex}-${i}`} className="mb-4 leading-relaxed font-body">{p}</p>;
-        });
+        const lines = part.split('\n').map((p, i) => renderFormattedLine(p, `${partIndex}-${i}`));
         return [...acc, ...lines];
       }
       return [...acc, part];
@@ -220,7 +230,7 @@ export function ChapterStep({ project, onBack, onComplete, initialContent }: Cha
               <CardHeader>
                 <CardTitle className="text-2xl font-headline">Bab {selectedChapter.index}: {selectedChapter.title}</CardTitle>
                 <CardDescription>
-                  Tulis konten per sub-bab. AI akan menggabungkannya menjadi satu bab utuh.
+                  Tulis konten per sub-bab. AI akan menggabungkannya menjadi satu bab utuh sesuai gaya yang dipilih.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col overflow-y-auto">
@@ -260,7 +270,7 @@ export function ChapterStep({ project, onBack, onComplete, initialContent }: Cha
                                         <AccordionContent className='pt-4'>
                                             {generatedContent[selectedChapterIndex]?.[index] ? (
                                                 <div className='prose prose-sm max-w-none text-muted-foreground font-body text-justify'>
-                                                    {generatedContent[selectedChapterIndex][index].content.split('\n').map((p,i) => <p key={i}>{p}</p>)}
+                                                    {generatedContent[selectedChapterIndex][index].content.split('\n').map((p,i) => renderFormattedLine(p, i))}
                                                 </div>
                                             ) : (
                                                 <div className="text-center py-8 border-2 border-dashed rounded-lg">
@@ -278,7 +288,7 @@ export function ChapterStep({ project, onBack, onComplete, initialContent }: Cha
                             </Accordion>
                         </ScrollArea>
                     </TabsContent>
-                    <TabsContent value="result" className="font-headline text-muted-foreground mt-4 text-justify">
+                    <TabsContent value="result" className="text-muted-foreground mt-4 text-justify">
                       {currentFullChapterContent ? (
                         <ScrollArea className="h-[calc(60vh)] pr-4">
                             {formatContentWithCitations(currentFullChapterContent.content, currentFullChapterContent.inlineCitations, currentFullChapterContent.references)}
@@ -325,5 +335,3 @@ export function ChapterStep({ project, onBack, onComplete, initialContent }: Cha
     </div>
   );
 }
-
-    

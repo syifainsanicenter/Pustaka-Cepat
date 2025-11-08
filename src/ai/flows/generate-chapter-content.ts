@@ -76,28 +76,37 @@ const prompt = ai.definePrompt({
   output: {
     schema: GenerateChapterContentOutputSchema,
   },
-  prompt: `TUGAS: Tulis 1 bab lengkap berdasarkan outline bab berikut. PASTIKAN SEMUA OUTPUT TEKS DALAM BAHASA YANG TELAH DITENTUKAN.
+  prompt: `TUGAS: Tulis 1 bab lengkap berdasarkan outline dan gaya penulisan. PASTIKAN SEMUA OUTPUT TEKS DALAM BAHASA YANG TELAH DITENTUKAN.
+
 KONFIG:
 Bahasa: {{{language}}}
-Gaya penulisan: {{{writingStyle}}}; Gaya bahasa: {{{tone}}}
+Gaya penulisan: {{{writingStyle}}}
+Gaya bahasa: {{{tone}}}
 Panjang target: {{{length}}} kata (boleh ±10%)
-Wajib sitasi: {{{enforceCitations}}} (true/false)
+Wajib sitasi: {{{enforceCitations}}}
 Kategori: {{{category}}}
 Tingkat kedalaman: {{{depthLevel}}} (dasar|menengah|mendalam)
-PERATURAN KONTEN: Ikuti kaidah paragraf, ejaan, dan tata bahasa sesuai KBBI (jika bahasa Indonesia). Gunakan gaya penulisan yang formal dan mendalam. Semua konten harus ditulis dalam bahasa: {{{language}}}.
+
+PERATURAN GAYA PENULISAN:
+- Jika writingStyle adalah "kumpulan cerita bergambar", format output harus berupa narasi cerita pendek per halaman, diikuti dengan deskripsi visual yang jelas dalam format "[Deskripsi gambar: ...]". Contoh: "Kancil berlari ke tepi sungai. [Deskripsi gambar: Kancil berdiri di tepi sungai yang lebar, tampak berpikir keras]".
+- Untuk gaya penulisan lainnya, tulis konten naratif, akademis, atau praktis sesuai dengan gaya yang dipilih. Ikuti kaidah paragraf, ejaan, dan tata bahasa sesuai KBBI (jika bahasa Indonesia).
+
 OUTLINE BAB:
 Judul: {{{chapterPlan.title}}}
 Tujuan: {{{chapterPlan.objectives}}}
 Poin/Subjudul: {{{chapterPlan.subheadings}}}
+
 REFERENSI TERSEDIA (use first):
 {{{referencesJson}}} // array of {refId, type, apa, meta{...}}
-DALIL (hanya untuk islam, jika ada):
+
+DALIL (hanya untuk islamic, jika ada):
 {{{religiousRefsJson}}} // array quran/hadith dengan arabText dan rujukan
+
 PENTING:
-Gunakan hanya referensi di atas untuk sitasi; jika kurang, isi newRefSuggestions dan todoRef (jangan karang DOI/URL).
-Sisipkan sitasi inline (Author, Tahun) di bagian yang relevan.
-Jika ada dalil: tampilkan teks Arab, kemudian translasi pendek (dalam kurung), dan rujukan (Qur’an S:X) atau (Koleksi, no).
-Keluarkan hanya JSON sesuai skema. Isi inlineCitations dengan rentang karakter berdasarkan content. Semua teks (content, suggestions, etc) harus dalam bahasa: {{{language}}}.`,
+- Gunakan hanya referensi di atas untuk sitasi; jika kurang, isi newRefSuggestions dan todoRef (jangan karang DOI/URL).
+- Sisipkan sitasi inline (Author, Tahun) hanya jika relevan dengan gaya penulisan (misal: akademik).
+- Jika ada dalil: tampilkan teks Arab, kemudian translasi pendek (dalam kurung), dan rujukan (Qur’an S:X) atau (Koleksi, no).
+- Keluarkan hanya JSON sesuai skema. Isi inlineCitations dengan rentang karakter berdasarkan content. Semua teks (content, suggestions, etc) harus dalam bahasa: {{{language}}}.`,
 });
 
 const generateChapterContentFlow = ai.defineFlow(
