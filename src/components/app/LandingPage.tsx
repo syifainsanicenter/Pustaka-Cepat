@@ -146,7 +146,7 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
                 id="wse-buttons-preview" 
                 src="https://edge-cdn.trakteer.id/images/embed/trbtn-red-1.png?v=14-05-2025" 
                 height="40" 
-                style={{ border: '0px', height: '40px' }} 
+                style={{ border: '0px', height: '40px', display: 'inline-block' }} 
                 alt="Dukung Pustaka Kilat" 
               />
             </a>
