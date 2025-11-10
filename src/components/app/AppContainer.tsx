@@ -6,7 +6,6 @@ import { AppHeader } from './AppHeader';
 import { LandingPage } from './LandingPage';
 import { CategoryStep } from './CategoryStep';
 import { IdeationStep } from './IdeationStep';
-import { OutlineStep } from './OutlineStep';
 import type { GenerateBookIdeasOutput } from '@/ai/flows/generate-book-ideas';
 import type { CreateStructuredOutlineOutput } from '@/ai/flows/create-structured-outline';
 import { Login } from '@/components/auth/Login';
@@ -15,13 +14,9 @@ import { StyleStep } from './StyleStep';
 import { ChapterStep, type ChapterContent } from './ChapterStep';
 import { ExportStep } from './ExportStep';
 import { FirebaseClientProvider, useUser } from '@/firebase';
-import { AdminPage } from './AdminPage';
-import { AdminLogin } from '../auth/AdminLogin';
 import { Loader2 } from 'lucide-react';
 
-export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register' | 'admin' | 'admin-login';
-
-const ADMIN_EMAIL = 'syifainsanicenter@gmail.com';
+export type AppStep = 'landing' | 'category' | 'ideation' | 'style' | 'outline' | 'chapter' | 'export' | 'login' | 'register';
 
 function AppContent() {
   const { user, loading } = useUser();
@@ -60,10 +55,6 @@ function AppContent() {
     setStep('category');
   };
   
-  const handleAdminLoginSuccess = () => {
-    setUsageCount(0);
-    setStep('admin');
-  };
 
   const handleRegisterSuccess = () => {
     setUsageCount(0);
@@ -109,15 +100,8 @@ function AppContent() {
     if (step === 'outline') setStep('style');
     if (step === 'chapter') setStep('outline');
     if (step === 'export') setStep('chapter');
-    if (step === 'login' || step === 'register' || step === 'admin-login') setStep('landing');
-    if (step === 'admin') setStep('category'); // If admin goes back, go to app
+    if (step === 'login' || step === 'register') setStep('landing');
   }
-  
-  const handleGoToAdmin = () => {
-    if (user?.email === ADMIN_EMAIL) {
-      setStep('admin');
-    }
-  };
 
   const renderStep = () => {
     // If loading, show a loading screen
@@ -130,23 +114,9 @@ function AppContent() {
       );
     }
 
-    // Special routing for admin
-    if (user?.email === ADMIN_EMAIL && step !== 'admin' && step !== 'landing') {
-        // If admin is logged in but not on admin page, check if they are trying to use the app
-        const appSteps: AppStep[] = ['category', 'ideation', 'style', 'outline', 'chapter', 'export'];
-        if (appSteps.includes(step)) {
-          // Admin is in the main app flow, allow it
-        } else {
-          // Otherwise, redirect to admin page
-          setStep('admin');
-          return null; // Render nothing while redirecting
-        }
-    }
-
-
     switch (step) {
       case 'landing':
-        return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} onAdminLogin={() => setStep('admin-login')} />;
+        return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} />;
       case 'category':
         return <CategoryStep onSelect={handleCategorySelect} onBack={handleBack}/>;
       case 'ideation':
@@ -163,18 +133,14 @@ function AppContent() {
         return <Login onBack={handleBack} onSwitchToRegister={() => setStep('register')} onLoginSuccess={handleLoginSuccess} />;
       case 'register':
         return <Register onBack={handleBack} onSwitchToLogin={() => setStep('login')} onRegisterSuccess={handleRegisterSuccess} />;
-      case 'admin':
-        return <AdminPage onBack={() => setStep('category')} />;
-      case 'admin-login':
-        return <AdminLogin onBack={handleBack} onLoginSuccess={handleAdminLoginSuccess} />;
       default:
-        return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} onAdminLogin={() => setStep('admin-login')} />;
+        return <LandingPage onStart={handleStart} onLogin={() => setStep('login')} onRegister={() => setStep('register')} />;
     }
   };
 
   return (
     <div className="flex flex-col flex-1">
-      {(step !== 'landing' && step !== 'login' && step !== 'register' && step !== 'admin-login') && <AppHeader step={step} onLogout={handleLogout} onGoToAdmin={handleGoToAdmin} isAdmin={user?.email === ADMIN_EMAIL} />}
+      {(step !== 'landing' && step !== 'login' && step !== 'register') && <AppHeader step={step} onLogout={handleLogout} />}
       <main className="flex-1 flex flex-col">{renderStep()}</main>
     </div>
   );

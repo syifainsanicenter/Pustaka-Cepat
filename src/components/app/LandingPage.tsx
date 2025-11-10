@@ -10,7 +10,6 @@ interface LandingPageProps {
   onStart: () => void;
   onLogin: () => void;
   onRegister: () => void;
-  onAdminLogin: () => void;
 }
 
 const workflowSteps = [
@@ -22,7 +21,7 @@ const workflowSteps = [
   { icon: Download, title: 'Ekspor Hasil', description: 'Unduh naskah Anda dalam format DOCX, PDF, atau LaTeX.' },
 ];
 
-export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: LandingPageProps) {
+export function LandingPage({ onStart, onLogin, onRegister }: LandingPageProps) {
   const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
 
   return (
@@ -148,7 +147,7 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
                   id="wse-buttons-preview" 
                   src="https://edge-cdn.trakteer.id/images/embed/trbtn-blue-1.png?v=14-05-2025" 
                   height="40" 
-                  style={{ border: '0px', height: '40px', display: 'inline-block' }} 
+                  style={{ border: '0px', height: '40px' }} 
                   alt="Dukung Pustaka Kilat" 
                 />
               </a>
@@ -159,7 +158,6 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
 
       <footer className="bg-foreground text-background mt-auto">
         <div className="container mx-auto px-4 md:px-6 py-8 text-center text-sm text-muted-foreground">
-          <a href="#" onClick={(e) => { e.preventDefault(); onAdminLogin(); }} className="hover:text-primary">Admin Login</a>
           <p className='mt-2'>&copy; {new Date().getFullYear()} Pustaka Kilat AI. Semua hak dilindungi.</p>
         </div>
       </footer>
