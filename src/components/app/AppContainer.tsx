@@ -11,6 +11,7 @@ import type { CreateStructuredOutlineOutput } from '@/ai/flows/create-structured
 import { Login } from '@/components/auth/Login';
 import { Register } from '@/components/auth/Register';
 import { StyleStep } from './StyleStep';
+import { OutlineStep } from './OutlineStep';
 import { ChapterStep, type ChapterContent } from './ChapterStep';
 import { ExportStep } from './ExportStep';
 import { FirebaseClientProvider, useUser } from '@/firebase';
