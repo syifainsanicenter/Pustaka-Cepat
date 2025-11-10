@@ -24,7 +24,7 @@ export function ExportStep({ project, chapterContent, onBack }: ExportStepProps)
     const synopsis = "Ini adalah placeholder untuk sinopsis buku Anda. Jelaskan secara singkat isi dan keunggulan buku ini untuk menarik minat pembaca di cover belakang.";
 
     const doc = new Document({
-      creator: "Pustaka Cepat AI",
+      creator: "Pustaka Kilat AI",
       title: bookTitle,
       styles: {
         paragraphStyles: [

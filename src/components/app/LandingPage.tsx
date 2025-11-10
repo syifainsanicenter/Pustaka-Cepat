@@ -29,7 +29,7 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
       <header className="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center sticky top-0 bg-background/80 backdrop-blur-sm z-50">
         <div className="flex items-center gap-3">
           <BookHeart className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-semibold text-foreground">Pustaka Cepat</span>
+          <span className="text-2xl font-semibold text-foreground">Pustaka Kilat</span>
         </div>
         <nav className="hidden md:flex gap-6 items-center text-sm font-medium">
           <a href="#fitur" className="text-muted-foreground hover:text-primary transition-colors">Fitur</a>
@@ -50,7 +50,7 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
                 Tulis buku ≤ 1 jam, dengan sitasi APA & dalil Islami.
               </h1>
               <p className="text-lg text-muted-foreground">
-                Pustaka Cepat AI mengubah ide Anda menjadi outline terstruktur dan bab-bab berkualitas, konsisten dengan gaya penulisan dan sitasi yang Anda butuhkan.
+                Pustaka Kilat AI mengubah ide Anda menjadi outline terstruktur dan bab-bab berkualitas, konsisten dengan gaya penulisan dan sitasi yang Anda butuhkan.
               </p>
               <div className="flex gap-4">
                 <Button size="lg" className="rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1" onClick={onStart}>
@@ -159,7 +159,7 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
       <footer className="bg-foreground text-background mt-auto">
         <div className="container mx-auto px-4 md:px-6 py-8 text-center text-sm text-muted-foreground">
           <a href="#" onClick={(e) => { e.preventDefault(); onAdminLogin(); }} className="hover:text-primary">Admin Login</a>
-          <p className='mt-2'>&copy; {new Date().getFullYear()} Pustaka Cepat AI. Semua hak dilindungi.</p>
+          <p className='mt-2'>&copy; {new Date().getFullYear()} Pustaka Kilat AI. Semua hak dilindungi.</p>
         </div>
       </footer>
     </div>
