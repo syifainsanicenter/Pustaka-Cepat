@@ -141,15 +141,17 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
             <p className="text-lg text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
               Jika Anda merasa alat ini membantu, pertimbangkan untuk memberikan dukungan agar kami bisa terus berkembang dan memberikan lebih banyak fitur bermanfaat.
             </p>
-            <a href="https://trakteer.id/suhaya_riyana2" target="_blank" rel="noopener noreferrer">
-              <img 
-                id="wse-buttons-preview" 
-                src="https://edge-cdn.trakteer.id/images/embed/trbtn-red-1.png?v=14-05-2025" 
-                height="40" 
-                style={{ border: '0px', height: '40px', display: 'inline-block' }} 
-                alt="Dukung Pustaka Kilat" 
-              />
-            </a>
+            <div className="text-center">
+              <a href="https://trakteer.id/suhaya_riyana2" target="_blank" rel="noopener noreferrer">
+                <img 
+                  id="wse-buttons-preview" 
+                  src="https://edge-cdn.trakteer.id/images/embed/trbtn-red-1.png?v=14-05-2025" 
+                  height="40" 
+                  style={{ border: '0px', height: '40px', display: 'inline-block' }} 
+                  alt="Dukung Pustaka Kilat" 
+                />
+              </a>
+            </div>
           </div>
         </section>
       </main>
