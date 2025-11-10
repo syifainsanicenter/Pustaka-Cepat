@@ -141,18 +141,15 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
             <p className="text-lg text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
               Jika Anda merasa alat ini membantu, pertimbangkan untuk memberikan dukungan agar kami bisa terus berkembang dan memberikan lebih banyak fitur bermanfaat.
             </p>
-            <div id="trakteer-button-container"></div>
-            <Script src="https://edge-cdn.trakteer.id/js/embed/trbtn.min.js?v=14-05-2025" strategy="lazyOnload" />
-            <Script id="trakteer-init" strategy="lazyOnload">
-              {`
-                try {
-                  var trbtnId=trbtn.init('Dukung Pustaka Kilat ar Lebih Bermanfaat','#be1e2d','https://trakteer.id/suhaya_riyana2/tip','https://trakteer.id/images/mix/coffee.png','40');
-                  trbtn.draw(trbtnId);
-                } catch (e) {
-                  console.error('Trakteer button failed to load.', e);
-                }
-              `}
-            </Script>
+            <a href="https://trakteer.id/suhaya_riyana2" target="_blank" rel="noopener noreferrer">
+              <img 
+                id="wse-buttons-preview" 
+                src="https://edge-cdn.trakteer.id/images/embed/trbtn-red-1.png?v=14-05-2025" 
+                height="40" 
+                style={{ border: '0px', height: '40px' }} 
+                alt="Dukung Pustaka Kilat" 
+              />
+            </a>
           </div>
         </section>
       </main>
