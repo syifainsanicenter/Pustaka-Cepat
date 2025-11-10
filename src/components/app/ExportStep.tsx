@@ -235,6 +235,24 @@ export function ExportStep({ project, chapterContent, onBack }: ExportStepProps)
         </Card>
       </div>
 
+      <div className="my-6 text-center">
+        <h3 className="text-xl font-bold text-center mb-2 text-foreground">Dukung Pustaka Kilat</h3>
+        <p className="text-md text-center text-muted-foreground mb-4 max-w-xl mx-auto">
+            Jika alat ini membantu, pertimbangkan untuk memberikan dukungan agar kami bisa terus berkembang.
+        </p>
+        <div className="text-center">
+            <a href="https://trakteer.id/suhaya_riyana2" target="_blank" rel="noopener noreferrer">
+              <img
+                id="wse-buttons-preview"
+                src="https://edge-cdn.trakteer.id/images/embed/trbtn-blue-1.png?v=14-05-2025"
+                height="40"
+                style={{ border: '0px', height: '40px', display: 'inline-block' }}
+                alt="Dukung Pustaka Kilat"
+              />
+            </a>
+        </div>
+      </div>
+
       <div className="mt-auto flex justify-between items-center pt-8 border-t">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="mr-2 h-4 w-4" />
