@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { BookOpen, Download, FileText, Languages, Lightbulb, ListTree, MoonStar, CheckCircle2 } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import Script from 'next/script';
 
 interface LandingPageProps {
   onStart: () => void;
@@ -20,50 +21,6 @@ const workflowSteps = [
   { icon: Download, title: 'Ekspor Hasil', description: 'Unduh naskah Anda dalam format DOCX, PDF, atau LaTeX.' },
 ];
 
-const pricingTiers = [
-  {
-    name: 'Coba Gratis',
-    price: 'Rp 0',
-    description: 'Coba semua fitur unggulan, terbatas untuk satu buku.',
-    features: [
-      '1 buku per minggu',
-      'Akses semua fitur',
-      'Dukungan Komunitas',
-    ],
-    buttonText: 'Daftar Gratis',
-    featured: false,
-  },
-  {
-    name: 'Penulis Pro',
-    price: 'Rp 258.000',
-    per: '/bulan',
-    description: 'Untuk penulis reguler yang butuh kecepatan dan konsistensi.',
-    features: [
-      '1 buku per hari',
-      'Dukungan sitasi & dalil',
-      'Ekspor ke DOCX & PDF',
-      'Dukungan prioritas via email',
-    ],
-    buttonText: 'Pilih Paket Pro',
-    featured: true,
-  },
-  {
-    name: 'Penerbit Pro',
-    price: 'Rp 500.000',
-    per: '/bulan',
-    description: 'Solusi tanpa batas untuk tim dan penerbit.',
-    features: [
-      'Buku tanpa batas',
-      'Fitur kolaborasi tim',
-      'Akses API (segera)',
-      'Manajer akun khusus',
-    ],
-    buttonText: 'Hubungi Sales',
-    featured: false,
-  },
-];
-
-
 export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: LandingPageProps) {
   const heroImage = PlaceHolderImages.find(img => img.id === 'landing-hero');
 
@@ -76,7 +33,7 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
         </div>
         <nav className="hidden md:flex gap-6 items-center text-sm font-medium">
           <a href="#fitur" className="text-muted-foreground hover:text-primary transition-colors">Fitur</a>
-          <a href="#harga" className="text-muted-foreground hover:text-primary transition-colors">Harga</a>
+          <a href="#harga" className="text-muted-foreground hover:text-primary transition-colors">Dukung Kami</a>
           <a href="#demo" className="text-muted-foreground hover:text-primary transition-colors">Demo</a>
         </nav>
         <div className="flex gap-2">
@@ -179,41 +136,23 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
         </section>
 
         <section id="harga" className="bg-muted py-16 md:py-24">
-          <div className="container mx-auto px-4 md:px-6">
-            <h2 className="text-3xl font-bold text-center mb-4 text-foreground">Paket Harga Fleksibel</h2>
-            <p className="text-lg text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-              Mulai gratis, lalu pilih paket yang sesuai dengan pertumbuhan kebutuhan Anda. Tanpa komitmen, batalkan kapan saja.
+          <div className="container mx-auto px-4 md:px-6 text-center">
+            <h2 className="text-3xl font-bold text-center mb-4 text-foreground">Dukung Pustaka Kilat Sekarang</h2>
+            <p className="text-lg text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Jika Anda merasa alat ini membantu, pertimbangkan untuk memberikan dukungan agar kami bisa terus berkembang dan memberikan lebih banyak fitur bermanfaat.
             </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-              {pricingTiers.map((tier) => (
-                <Card key={tier.name} className={`flex flex-col h-full ${tier.featured ? 'border-primary ring-2 ring-primary' : ''}`}>
-                  {tier.featured && <div className="bg-primary text-primary-foreground text-center py-2 text-sm font-bold">Paling Populer</div>}
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">{tier.name}</CardTitle>
-                    <p className="text-4xl font-bold">{tier.price}<span className="text-lg font-normal text-muted-foreground">{tier.per}</span></p>
-                    <CardDescription>{tier.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-1 flex flex-col">
-                    <ul className="space-y-3 text-sm text-muted-foreground">
-                      {tier.features.map((feature, i) => (
-                        <li key={i} className="flex items-center gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-accent" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button 
-                      className="w-full mt-auto" 
-                      variant={tier.featured ? 'default' : 'outline'}
-                      onClick={tier.name === 'Coba Gratis' ? onRegister : undefined}
-                    >
-                      {tier.buttonText}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-             <p className="text-center text-sm text-muted-foreground mt-8">Setelah satu kali penggunaan, pengguna baru wajib mendaftar paket <a href="#" onClick={onRegister} className="underline text-primary">Coba Gratis</a> untuk melanjutkan.</p>
+            <div id="trakteer-button-container"></div>
+            <Script src="https://edge-cdn.trakteer.id/js/embed/trbtn.min.js?v=14-05-2025" strategy="lazyOnload" />
+            <Script id="trakteer-init" strategy="lazyOnload">
+              {`
+                try {
+                  var trbtnId=trbtn.init('Dukung Pustaka Kilat ar Lebih Bermanfaat','#be1e2d','https://trakteer.id/suhaya_riyana2/tip','https://trakteer.id/images/mix/coffee.png','40');
+                  trbtn.draw(trbtnId);
+                } catch (e) {
+                  console.error('Trakteer button failed to load.', e);
+                }
+              `}
+            </Script>
           </div>
         </section>
       </main>
@@ -231,5 +170,3 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
 const BookHeart = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/><path d="M12 13.5c-3 0-5-2-5-5 0-3 2-5 5-5s5 2 5 5c0 3-2 5-5 5z"/></svg>
 )
-
-    
