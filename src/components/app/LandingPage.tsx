@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -145,7 +146,7 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
               <a href="https://trakteer.id/suhaya_riyana2" target="_blank" rel="noopener noreferrer">
                 <img 
                   id="wse-buttons-preview" 
-                  src="https://edge-cdn.trakteer.id/images/embed/trbtn-red-1.png?v=14-05-2025" 
+                  src="https://edge-cdn.trakteer.id/images/embed/trbtn-blue-1.png?v=14-05-2025" 
                   height="40" 
                   style={{ border: '0px', height: '40px', display: 'inline-block' }} 
                   alt="Dukung Pustaka Kilat" 
@@ -169,3 +170,5 @@ export function LandingPage({ onStart, onLogin, onRegister, onAdminLogin }: Land
 const BookHeart = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/><path d="M12 13.5c-3 0-5-2-5-5 0-3 2-5 5-5s5 2 5 5c0 3-2 5-5 5z"/></svg>
 )
+
+    
